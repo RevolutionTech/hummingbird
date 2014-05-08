@@ -3,5 +3,4 @@
 # Created by: Lucas Connors
 
 Run Hummingbird by piping output from tcpdump using the following command:
-:::bash
-sudo tcpdump -e -i wlan0 2>> tcpdump_error.log | python hummingbird.py
+	sudo tcpdump -e -i wlan0 2>> tcpdump_error.log | python hummingbird.py
