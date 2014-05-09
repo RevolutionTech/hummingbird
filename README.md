@@ -8,6 +8,11 @@ Then once you've done that, run Hummingbird by piping output from tcpdump using 
 
 `sudo tcpdump -e -i wlan0 2>> tcpdump_error.log | python hummingbird.py`
 
+Note: You may need to replace `wlan0` with a different interface.
+
+
 Dependencies:
+
 - standard Python libraries (obviously)
+
 - pygame
