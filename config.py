@@ -9,3 +9,10 @@ do_not_play = "DNP"
 need_to_assign = "NTA"
 unknown_user_prefix = "Unknown #"
 unknown_user_suffix_length = 5
+play_unknowns = False
+
+time_reset_system = 3600 * 24 # 1 day
+time_wait_to_play = 60 * 6 # 6 minutes
+time_check_queue = 0.25
+time_max_song_length = 20
+time_fadeout_song = 3000 # in milliseconds
