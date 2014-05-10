@@ -11,7 +11,7 @@ def get_MAC(line):
 	broadcast_mac_re = re.match(config.tcpdump_broadcast_mac_re, line)
 	probe_request_mac_re = re.match(config.tcpdump_probe_request_mac_re, line)
 	probe_response_mac_re = re.match(config.tcpdump_probe_response_mac_re, line)
-	acknowledgment_mac_re = re.match(config.tcpdump_acknowledgment_mac_re, line)
+	acknowledgement_mac_re = re.match(config.tcpdump_acknowledgement_mac_re, line)
 	data_iv_mac_re = re.match(config.tcpdump_data_iv_mac_re, line)
 	if message_re:
 		addresses = [message_re.group(2), message_re.group(4)]
