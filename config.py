@@ -1,5 +1,11 @@
 tcpdump_message_re = "^(\d{2}:){2}\d{2}.\d+ (([0-9a-z]{2}:){5}[0-9a-z]{2}) [0-9a-zA-Z\(\) ]*> (([0-9a-z]{2}:){5}[0-9a-z]{2}) [0-9a-zA-Z\(\) ]*, .*$"
 tcpdump_broadcast_re = "^(\d{2}:){2}\d{2}.\d+ (([0-9a-z]{2}:){5}[0-9a-z]{2}) [0-9a-zA-Z\(\) ]*> Broadcast, .*$"
+tcpdump_message_mac_re = "^(\d{2}:){2}\d{2}.\d+ .* BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* DA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* SA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$"
+tcpdump_broadcast_mac_re = "^(\d{2}:){2}\d{2}.\d+ \d+.* BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* DA:Broadcast SA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$"
+tcpdump_probe_request_mac_re = "^((\d{2}:){2}\d{2}.\d+ .* BSSID:Broadcast DA:Broadcast SA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2})) .*$"
+tcpdump_probe_response_mac_re = "^(\d{2}:){2}\d{2}.\d+ .* BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* DA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* SA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$"
+tcpdump_acknowledgment_mac_re = "^(\d{2}:){2}\d{2}.\d+ .* RA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$"
+tcpdump_data_iv_mac_re = "^(\d{2}:){2}\d{2}.\d+ .* DA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* SA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$"
 
 data_file = "songs.csv"
 audio_bytes_dir = "audio/bytes/"
