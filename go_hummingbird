@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo tcpdump -e -i en1 -I 2>> tcpdump_error.log | python2.7-32 hummingbird.py
