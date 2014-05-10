@@ -20,7 +20,7 @@ def get_MAC(line):
 	elif message_mac_re:
 		addresses = [message_mac_re.group(2), message_mac_re.group(4), message_mac_re.group(6)]
 	elif broadcast_mac_re:
-		addresses = [broadcast_mac_re.group(2), broadcast_mac_re.group(4)
+		addresses = [broadcast_mac_re.group(2), broadcast_mac_re.group(4)]
 	elif probe_request_mac_re:
 		addresses = [probe_request_mac_re.group(2)]
 	elif probe_response_mac_re:
