@@ -10,5 +10,5 @@ def generate_random_suffix(length=config.unknown_user_suffix_length):
 		random_suffix.append(random.choice(chars_allowed))
 	return ''.join(random_suffix)
 
-def is_unknown_user(name):
-	return len(name) >= len(config.unknown_user_prefix) and name[:len(config.unknown_user_prefix)] == config.unknown_user_prefix
+def is_unknown_user(user_name):
+	return len(user_name) >= len(config.unknown_user_prefix) and user_name[:len(config.unknown_user_prefix)] == config.unknown_user_prefix
