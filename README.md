@@ -21,14 +21,17 @@ To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.
 
 Custom walk-in songs should be stored in the subdirectory `audio/`. Inside that directory, there should be another subdirectory `random/` where additional songs are included for the assignment of unknown MAC addresses (see below).
 
-Associations are listed in a comma-separated value file called `songs.csv`. Each line should contain three items: MAC address, name, and path/to/song. Such a file may look like the following:
+Associations are listed in a comma-separated value file called `songs.csv`. Each line should contain at least three items: MAC address, name, and path/to/song. Such a file may look like the following:
 
 	aa:bb:cc:dd:ee:ff,John,audio/John.mp3
-	bb:cc:dd:ee:ff:aa,Smith,audio/Smith.mp3
+	00:11:22:33:44:55,John-MacBook,DNP
+	bb:cc:dd:ee:ff:aa,Smith,NTA
 	cc:dd:ee:ff:aa:bb,Mary,audio/Mary.mp3
-	dd:ee:ff:aa:bb:cc,Brown,audio/Brown.mp3
+	dd:ee:ff:aa:bb:cc,Brown,audio/Brown.mp3,24
 
-Some configuration settings can be easily changed by modifying `config.py`. For example, by default unknown MAC addresses will not cause a song to play (to avoid strangers walking by from observed the system). However, Hummingbird can be easily changed so that new MAC addresses are automatically assigned a walk-in song from `audio/random/` on the first time that they connect.
+A line may also have an optional fourth item which is interpreted as the length of time that the song should play for (in seconds). By default, each song plays for a maximum of 20 seconds and so this option allows for exceptions to that length. If `DNP` (Do Not Play) is provided for the path, then no song will play when the MAC address in that line is detected. This is useful for laptops and desktop computers. If `NTA` (Need To Assign) is provided for the path, then a song will be randomly chosen for this user (out of the songs under `audio/random/`) when Hummingbird starts.
+
+Some configuration settings can be easily changed by modifying `config.py`. For example, by default unknown MAC addresses will not cause a song to play (to avoid strangers walking by from being observed by the system). However, Hummingbird can be easily changed so that new MAC addresses are automatically assigned a walk-in song from `audio/random/` on the first time that they connect.
 
 ## Running
 

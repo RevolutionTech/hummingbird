@@ -5,7 +5,7 @@ play_unknowns = False
 time_reset_system = 3600 * 24 # 1 day
 time_wait_to_play = 60 * 5 # 5 minutes
 time_check_queue = 0.25
-time_max_song_length = 24
+time_max_song_length = 20
 time_fadeout_song = 3000 # in milliseconds
 
 # User Files
@@ -35,3 +35,7 @@ tcpdump_re = {
 	'data_iv_broadcast': ("^(\d{2}:){2}\d{2}.\d+ .* BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* SA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$", [2, 4]),
 	'power_save_poll': ("^(\d{2}:){2}\d{2}.\d+ .* BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* TA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$", [2, 4])
 }
+
+# Debugging
+wait_to_play = True
+print_all_MACs = False

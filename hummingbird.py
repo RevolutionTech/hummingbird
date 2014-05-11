@@ -22,14 +22,21 @@ class System:
 			# handle input as network traffic from tcpdump
 			addresses = get_MAC(line=stdin.readline())
 			for address in addresses:
+				# add address to dict
 				self.add_new_address(address=address)
-				user_name, user_song = self.all_addresses[address]
+				user_name, user_song, user_songlength = self.all_addresses[address]
+				# print MAC addresses
+				if config.print_all_MACs:
+					if is_unknown_user(user_name):
+						print "MAC detected: {address}".format(address=address)
+					else:
+						print "MAC detected: {address}; owned by {name}".format(address=address, name=user_name)
 				# play the user's song (if theirs hasn't played already)
 				if user_song != config.do_not_play and address not in self.addresses_played_today:
 					self.addresses_played_today.add(address)
 					if not is_unknown_user(user_name=user_name) or config.play_unknowns:
 						print "Detected activity from {name}.".format(name=user_name)
-						self.music_player.queue_song(user_name=user_name, user_song=user_song)
+						self.music_player.queue_song(user_name=user_name, user_song=user_song, user_songlength=user_songlength)
 
 	def reset_system(self):
 		# reset (or initialize) the system
@@ -47,7 +54,10 @@ class System:
 		with open(config.data_file, 'r') as f:
 			for line in f.readlines():
 				# get the user's information
-				user_address, user_name, user_song = line.replace('\n','').split(',')
+				user_info = line.replace('\n','').split(',')
+				if len(user_info) == 3:
+					user_info.append(config.time_max_song_length)
+				user_address, user_name, user_song, user_songlength = user_info
 
 				# assign a random song, if needed
 				if user_song == config.need_to_assign:
@@ -57,7 +67,7 @@ class System:
 					lines.append(line)
 
 				# add to our dict
-				addresses[user_address] = (user_name, user_song)
+				addresses[user_address] = (user_name, user_song, user_songlength)
 
 		# rewrite the data file to handle changes (for NTAs)
 		remove(config.data_file)
@@ -76,7 +86,7 @@ class System:
 
 			with open(config.data_file, 'a') as f:
 				f.write("{address},{name},{song}\n".format(address=address, name=user_name, song=randomSong))
-			self.all_addresses[address] = (user_name, randomSong)
+			self.all_addresses[address] = (user_name, randomSong, config.time_max_song_length)
 
 			if is_unknown_user(user_name=user_name):
 				print "A new unknown device with address {address} has been added and has been assigned {song}.".format(address=address, song=randomSong)
