@@ -19,5 +19,5 @@ def get_MAC(line):
 	
 	# report unrecognized lines from tcpdump
 	with open(config.tcpdump_did_not_match_log, 'a') as f:
-		f.write(string=line)
+		f.write(line)
 	return []
