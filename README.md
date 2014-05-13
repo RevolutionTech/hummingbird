@@ -1,6 +1,8 @@
 # Hummingbird: Walk-in songs
 # Created by: Lucas Connors
 
+![Hummingbird](http://i60.tinypic.com/2wox1xs.jpg)
+
 ***
 
 ## About
