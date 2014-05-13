@@ -6,9 +6,12 @@ from pygame import mixer
 
 import config
 
+def listdir_nohidden(path):
+	return [x for x in listdir(path) if not x.startswith('.')]
+
 def get_random_song():
 	randomDir = config.audio_dir + config.random_subdir
-	return "{directory}{file}".format(directory=randomDir, file=random.choice(listdir(randomDir)))
+	return "{directory}{file}".format(directory=randomDir, file=random.choice(listdir_nohidden(randomDir)))
 
 class MusicPlayer:
 	def __init__(self):

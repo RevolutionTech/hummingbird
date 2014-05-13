@@ -7,7 +7,14 @@ sudo echo "Go Hummingbird!"
 # Determine the network interface
 INTERFACE=$(echo $INTERFACE)
 if [[ -z "${INTERFACE}" ]]; then
-	INTERFACE=$(ip route get 8.8.8.8 | awk '{ print $(NF-2); exit }')
+	if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+		INTERFACE=$(ip route get 8.8.8.8 | awk '{ print $(NF-2); exit }')
+	elif [[ "${OSTYPE}" == "darwin"* ]]; then
+		INTERFACE=$(route get 8.8.8.8 | grep interface | awk '{ print $NF; exit }')
+	else
+		echo "This script does not support this operating system. An override of INTERFACE is required."
+		exit 1
+	fi
 	export INTERFACE
 fi
 
