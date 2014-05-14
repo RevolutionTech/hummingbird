@@ -67,7 +67,7 @@ class System:
 					lines.append(line)
 
 				# add to our dict
-				addresses[user_address] = (user_name, user_song, user_songlength)
+				addresses[user_address] = (user_name, user_song, float(user_songlength))
 
 		# rewrite the data file to handle changes (for NTAs)
 		remove(config.data_file)
