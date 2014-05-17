@@ -5,6 +5,7 @@ import threading
 from pygame import mixer
 
 import config
+from utils import log
 
 def listdir_nohidden(path):
 	return [x for x in listdir(path) if not x.startswith('.')]
@@ -30,7 +31,7 @@ class MusicPlayer:
 	def play_song_on_queue(self):
 		if not self.ready_to_queue:
 			self.ready_to_queue = True
-			print "System now ready to play walk-in songs."
+			log(message="System now ready to play walk-in songs.")
 		threading.Timer(interval=config.time_check_queue, function=self.play_song_on_queue).start()
 
 		if not mixer.music.get_busy():
@@ -43,7 +44,7 @@ class MusicPlayer:
 				# set a timer for long songs
 				threading.Timer(user.length, self.stop_long_song, [user.name]).start()
 				# play the song
-				print "Playing {name}'s song {song}.".format(name=user.name, song=user.song)
+				log(message="Playing {name}'s song {song}.".format(name=user.name, song=user.song))
 				mixer.music.load(user.song)
 				mixer.music.play()
 			else:
@@ -55,5 +56,5 @@ class MusicPlayer:
 
 	def queue_song(self, user):
 		if self.ready_to_queue:
-			print "Queued {name}'s song {song}.".format(name=user.name, song=user.song)
+			log(message="Queued {name}'s song {song}.".format(name=user.name, song=user.song))
 			self.song_queue.append(user)

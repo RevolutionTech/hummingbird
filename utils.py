@@ -1,7 +1,11 @@
+import datetime
 import string
 import random
 
 import config
+
+def log(message):
+	print "[{timestamp}] {message}".format(timestamp=datetime.datetime.now().replace(microsecond=0), message=message)
 
 def generate_random_suffix(length=config.unknown_user_suffix_length):
 	chars_allowed = string.lowercase + string.uppercase + string.digits

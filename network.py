@@ -1,6 +1,7 @@
 import re
 
 import config
+from utils import log
 
 def get_MAC(line):
 	# check if line should be ignored
@@ -25,6 +26,6 @@ def get_MAC(line):
 def print_MAC_address(address, user):
 	if config.print_all_MACs:
 		if is_unknown_user(name=user.name):
-			print "MAC detected: {address}".format(address=address)
+			log(message="MAC detected: {address}".format(address=address))
 		else:
-			print "MAC detected: {address}; owned by {name}".format(address=address, name=user.name)
+			log(message="MAC detected: {address}; owned by {name}".format(address=address, name=user.name))

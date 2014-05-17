@@ -8,7 +8,7 @@ import threading
 import config
 from network import get_MAC, print_MAC_address
 from music import MusicPlayer, get_random_song
-from utils import generate_random_suffix, is_unknown_user
+from utils import log, generate_random_suffix, is_unknown_user
 
 class User:
 	def __init__(self, name=config.unknown_user_prefix, song=config.need_to_assign, length=config.time_max_song_length, arrival=datetime.datetime.now()):
@@ -45,13 +45,11 @@ class User:
 
 class System:
 	def __init__(self):
-		print "Initializing..."
-
+		log(message="Initializing...")
 		self.music_player = MusicPlayer()
 		self.all_addresses = self.read_in_addresses()
-
-		print "System has been initialized."
-		print "Waiting for tcpdump to provide input..."
+		log(message="System has been initialized.")
+		log(message="Waiting for tcpdump to provide input...")
 
 		while True:
 			# handle input as network traffic from tcpdump
@@ -65,7 +63,7 @@ class System:
 				# play the user's song (if theirs hasn't played already)
 				if user.song != config.do_not_play and user.has_not_played_today():
 					if not is_unknown_user(name=user.name) or config.play_unknowns:
-						print "Detected activity from {name}.".format(name=user.name)
+						log(message="Detected activity from {name}.".format(name=user.name))
 						user.queue_song(music_player=self.music_player)
 
 	def read_in_addresses(self):
@@ -105,8 +103,8 @@ class System:
 				f.write("{address},{name},{song}\n".format(address=address, name=user.name, song=user.song))
 
 			if is_unknown_user(name=user.name):
-				print "A new unknown device with address {address} has been added and has been assigned {song}.".format(address=address, song=user.song)
+				log(message="A new unknown device with address {address} has been added and has been assigned {song}.".format(address=address, song=user.song))
 			else:
-				print "{name} has been added and has been assigned {song}.".format(name=user.name, song=user.song)
+				log(message="{name} has been added and has been assigned {song}.".format(name=user.name, song=user.song))
 
 System()
