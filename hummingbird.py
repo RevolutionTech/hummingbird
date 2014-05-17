@@ -48,12 +48,14 @@ class System:
 		log(message="Initializing...")
 		self.music_player = MusicPlayer()
 		self.all_addresses = self.read_in_addresses()
-		log(message="System has been initialized.")
+		self.waiting_for_input = False
+		self.input_timeout()
 		log(message="Waiting for tcpdump to provide input...")
 
 		while True:
 			# handle input as network traffic from tcpdump
 			addresses = get_MAC(line=stdin.readline())
+			self.waiting_for_input = False
 			for address in addresses:
 				# add address to dict
 				self.add_new_address(address=address)
@@ -65,6 +67,13 @@ class System:
 					if not is_unknown_user(name=user.name) or config.play_unknowns:
 						log(message="Detected activity from {name}.".format(name=user.name))
 						user.queue_song(music_player=self.music_player)
+
+	def input_timeout(self):
+		if self.waiting_for_input:
+			log(message="Warning: tcpdump has not provided input for a while. There may be something wrong.")
+		else:
+			self.waiting_for_input = True
+			threading.Timer(interval=config.time_input_timeout, function=self.input_timeout).start()
 
 	def read_in_addresses(self):
 		addresses = {}
@@ -80,10 +89,8 @@ class System:
 				user_address, user_name, user_song, user_songlength = user_line
 				user = User(name=user_name, song=user_song, length=user_songlength, arrival=datetime.datetime.utcfromtimestamp(0))
 
-				# update the user's line
+				# update the user's line and add to our dict
 				lines.append(line.replace(config.need_to_assign, user.song))
-
-				# add to our dict
 				addresses[user_address] = user
 
 		# rewrite the data file to handle changes (for NTAs)
