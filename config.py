@@ -1,8 +1,10 @@
+import datetime
+
 # Main Settings
 play_unknowns = False
 
 # Time Settings
-time_reset_system = 3600 * 24 # 1 day
+time_reset_time = datetime.time(hour=4, minute=0) # 4:00am
 time_wait_to_play = 60 * 5 # 5 minutes
 time_check_queue = 0.25
 time_max_song_length = 20

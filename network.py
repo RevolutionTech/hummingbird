@@ -21,3 +21,10 @@ def get_MAC(line):
 	with open(config.tcpdump_did_not_match_log, 'a') as f:
 		f.write(line)
 	return []
+
+def print_MAC_address(address, user):
+	if config.print_all_MACs:
+		if is_unknown_user(name=user.name):
+			print "MAC detected: {address}".format(address=address)
+		else:
+			print "MAC detected: {address}; owned by {name}".format(address=address, name=user.name)

@@ -1,21 +1,56 @@
 from os import remove
 from sys import stdin
+import datetime
 import random
 import string
 import threading
 
 import config
-from network import get_MAC
+from network import get_MAC, print_MAC_address
 from music import MusicPlayer, get_random_song
 from utils import generate_random_suffix, is_unknown_user
+
+class User:
+	def __init__(self, name=config.unknown_user_prefix, song=config.need_to_assign, length=config.time_max_song_length, arrival=datetime.datetime.now()):
+		if is_unknown_user(name=name):
+			self.name = name + generate_random_suffix()
+		else:
+			self.name = name
+		if song == config.need_to_assign:
+			self.song = get_random_song()
+		else:
+			self.song = song
+		self.length = length
+		self.arrival = arrival
+
+	def has_not_played_today(self):
+		# not played today if:
+		# 	1) it's now after reset point and last played earlier today before reset point or earlier
+		# 	2) it's now before reset point and last played earlier yesterday before reset point or earlier
+		now = datetime.datetime.now()
+		today = now.date()
+		yesterday = today - datetime.timedelta(days=1)
+		return (
+			now.time() >= config.time_reset_time and self.arrival < datetime.datetime.combine(today, config.time_reset_time)
+		) or (
+			now.time() < config.time_reset_time and self.arrival < datetime.datetime.combine(yesterday, config.time_reset_time)
+		)
+
+	def queue_song(self, music_player):
+		self.arrival = datetime.datetime.now()
+		music_player.queue_song(user=self)
+
+	def __unicode__(self):
+		return "{name}: {song} ({length}s)".format(name=self.name, song=self.song, length=self.length)
 
 class System:
 	def __init__(self):
 		print "Initializing..."
 
-		self.reset_system()
+		self.music_player = MusicPlayer()
 		self.all_addresses = self.read_in_addresses()
 
+		print "System has been initialized."
 		print "Waiting for tcpdump to provide input..."
 
 		while True:
@@ -24,27 +59,14 @@ class System:
 			for address in addresses:
 				# add address to dict
 				self.add_new_address(address=address)
-				user_name, user_song, user_songlength = self.all_addresses[address]
-				# print MAC addresses
-				if config.print_all_MACs:
-					if is_unknown_user(user_name):
-						print "MAC detected: {address}".format(address=address)
-					else:
-						print "MAC detected: {address}; owned by {name}".format(address=address, name=user_name)
+				user = self.all_addresses[address]
+				print_MAC_address(address=address, user=user)
+
 				# play the user's song (if theirs hasn't played already)
-				if user_song != config.do_not_play and address not in self.addresses_played_today:
-					self.addresses_played_today.add(address)
-					if not is_unknown_user(user_name=user_name) or config.play_unknowns:
-						print "Detected activity from {name}.".format(name=user_name)
-						self.music_player.queue_song(user_name=user_name, user_song=user_song, user_songlength=user_songlength)
-
-	def reset_system(self):
-		# reset (or initialize) the system
-		threading.Timer(interval=config.time_reset_system, function=self.reset_system).start()
-		self.music_player = MusicPlayer()
-		self.addresses_played_today = set()
-
-		print "System has been initialized/reset."
+				if user.song != config.do_not_play and user.has_not_played_today():
+					if not is_unknown_user(name=user.name) or config.play_unknowns:
+						print "Detected activity from {name}.".format(name=user.name)
+						user.queue_song(music_player=self.music_player)
 
 	def read_in_addresses(self):
 		addresses = {}
@@ -54,20 +76,17 @@ class System:
 		with open(config.data_file, 'r') as f:
 			for line in f.readlines():
 				# get the user's information
-				user_info = line.replace('\n','').split(',')
-				if len(user_info) == 3:
-					user_info.append(config.time_max_song_length)
-				user_address, user_name, user_song, user_songlength = user_info
+				user_line = line.replace('\n','').split(',')
+				if len(user_line) == 3:
+					user_line.append(config.time_max_song_length)
+				user_address, user_name, user_song, user_songlength = user_line
+				user = User(name=user_name, song=user_song, length=user_songlength, arrival=datetime.datetime.utcfromtimestamp(0))
 
-				# assign a random song, if needed
-				if user_song == config.need_to_assign:
-					user_song = get_random_song()
-					lines.append(line.replace(config.need_to_assign, user_song))
-				else:
-					lines.append(line)
+				# update the user's line
+				lines.append(line.replace(config.need_to_assign, user.song))
 
 				# add to our dict
-				addresses[user_address] = (user_name, user_song, float(user_songlength))
+				addresses[user_address] = user
 
 		# rewrite the data file to handle changes (for NTAs)
 		remove(config.data_file)
@@ -79,18 +98,15 @@ class System:
 	def add_new_address(self, address, user_name=config.unknown_user_prefix):
 		# if the address is new, add it to our dict
 		if address not in self.all_addresses:
-			if is_unknown_user(user_name=user_name):
-				user_name += generate_random_suffix()
-
-			randomSong = get_random_song()
+			user = User(name=user_name)
+			self.all_addresses[address] = user
 
 			with open(config.data_file, 'a') as f:
-				f.write("{address},{name},{song}\n".format(address=address, name=user_name, song=randomSong))
-			self.all_addresses[address] = (user_name, randomSong, config.time_max_song_length)
+				f.write("{address},{name},{song}\n".format(address=address, name=user.name, song=user.song))
 
-			if is_unknown_user(user_name=user_name):
-				print "A new unknown device with address {address} has been added and has been assigned {song}.".format(address=address, song=randomSong)
+			if is_unknown_user(name=user.name):
+				print "A new unknown device with address {address} has been added and has been assigned {song}.".format(address=address, song=user.song)
 			else:
-				print "{name} has been added and has been assigned {song}.".format(name=user_name, song=randomSong)
+				print "{name} has been added and has been assigned {song}.".format(name=user.name, song=user.song)
 
 System()

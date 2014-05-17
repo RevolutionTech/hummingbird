@@ -36,24 +36,24 @@ class MusicPlayer:
 		if not mixer.music.get_busy():
 			if self.song_queue:
 				# pop the next song off of the front of the queue
-				user_name, user_song, user_songlength = self.song_queue[0]
+				user = self.song_queue[0]
 				self.song_queue = self.song_queue[1:]
 				# set the user of the currently playing song
-				self.user_song_currently_playing = user_name
+				self.user_song_currently_playing = user.name
 				# set a timer for long songs
-				threading.Timer(user_songlength, self.stop_long_song, [user_name]).start()
+				threading.Timer(user.length, self.stop_long_song, [user.name]).start()
 				# play the song
-				print "Playing {name}'s song {song}.".format(name=user_name, song=user_song)
-				mixer.music.load(user_song)
+				print "Playing {name}'s song {song}.".format(name=user.name, song=user.song)
+				mixer.music.load(user.song)
 				mixer.music.play()
 			else:
 				self.user_song_currently_playing = None
 
-	def stop_long_song(self, user):
-		if self.user_song_currently_playing == user:
+	def stop_long_song(self, user_name):
+		if self.user_song_currently_playing == user_name:
 			mixer.music.fadeout(config.time_fadeout_song)
 
-	def queue_song(self, user_name, user_song, user_songlength):
+	def queue_song(self, user):
 		if self.ready_to_queue:
-			print "Queued {name}'s song {song}.".format(name=user_name, song=user_song)
-			self.song_queue.append((user_name, user_song, user_songlength))
+			print "Queued {name}'s song {song}.".format(name=user.name, song=user.song)
+			self.song_queue.append(user)
