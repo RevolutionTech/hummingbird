@@ -87,7 +87,7 @@ class System:
 				if len(user_line) == 3:
 					user_line.append(config.time_max_song_length)
 				user_address, user_name, user_song, user_songlength = user_line
-				user = User(system=self, name=user_name, song=user_song, length=user_songlength, arrival=datetime.datetime.utcfromtimestamp(0))
+				user = User(system=self, name=user_name, song=user_song, length=float(user_songlength), arrival=datetime.datetime.utcfromtimestamp(0))
 
 				# update the user's line and add to our dict
 				lines.append(line.replace(config.need_to_assign, user.song))
