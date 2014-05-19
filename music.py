@@ -7,16 +7,11 @@ from pygame import mixer
 import config
 from utils import log
 
-def listdir_nohidden(path):
-	return [x for x in listdir(path) if not x.startswith('.')]
-
-def get_random_song():
-	randomDir = config.audio_dir + config.random_subdir
-	return "{directory}{file}".format(directory=randomDir, file=random.choice(listdir_nohidden(randomDir)))
-
 class MusicPlayer:
 	def __init__(self):
 		mixer.init()
+		self.random_songs = self.find_random_songs()
+		self.random_stack = []
 		self.ready_to_queue = False
 		self.song_queue = []
 		self.user_song_currently_playing = None
@@ -27,6 +22,36 @@ class MusicPlayer:
 		else:
 			time_wait_to_play = 0
 		threading.Timer(interval=time_wait_to_play, function=self.play_song_on_queue).start()
+
+	def find_random_songs(self):
+		randomDir = config.audio_dir + config.random_subdir
+		random_songs = {}
+		for song in listdir(randomDir):
+			if not song.startswith('.'):
+				random_songs[randomDir+song] = 0
+		return random_songs
+
+	def increment_random_song_use(self, song):
+		self.random_songs[song] += 1
+
+	def get_random_song(self):
+		# generate new random stack, if required
+		if len(self.random_stack) == 0:
+			min_song_use = float('inf')
+			for key, val in self.random_songs.iteritems():
+				if val < min_song_use:
+					min_song_use = val
+					random_stack = []
+				if val == min_song_use:
+					random_stack.append(key)
+			random.shuffle(random_stack)
+			self.random_stack = random_stack
+
+		# get next element off of the stack
+		song = self.random_stack[0]
+		self.random_stack = self.random_stack[1:]
+		self.increment_random_song_use(song=song)
+		return song
 
 	def play_song_on_queue(self):
 		if not self.ready_to_queue:

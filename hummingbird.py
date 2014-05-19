@@ -7,17 +7,17 @@ import threading
 
 import config
 from network import get_MAC, print_MAC_address
-from music import MusicPlayer, get_random_song
+from music import MusicPlayer
 from utils import log, generate_random_suffix, is_unknown_user
 
 class User:
-	def __init__(self, name=config.unknown_user_prefix, song=config.need_to_assign, length=config.time_max_song_length, arrival=datetime.datetime.now()):
+	def __init__(self, system, name=config.unknown_user_prefix, song=config.need_to_assign, length=config.time_max_song_length, arrival=datetime.datetime.now()):
 		if is_unknown_user(name=name):
 			self.name = name + generate_random_suffix()
 		else:
 			self.name = name
 		if song == config.need_to_assign:
-			self.song = get_random_song()
+			self.song = system.music_player.get_random_song()
 		else:
 			self.song = song
 		self.length = length
@@ -87,11 +87,15 @@ class System:
 				if len(user_line) == 3:
 					user_line.append(config.time_max_song_length)
 				user_address, user_name, user_song, user_songlength = user_line
-				user = User(name=user_name, song=user_song, length=user_songlength, arrival=datetime.datetime.utcfromtimestamp(0))
+				user = User(system=self, name=user_name, song=user_song, length=user_songlength, arrival=datetime.datetime.utcfromtimestamp(0))
 
 				# update the user's line and add to our dict
 				lines.append(line.replace(config.need_to_assign, user.song))
 				addresses[user_address] = user
+
+				# update random song use count
+				if user_song.startswith(config.audio_dir+config.random_subdir):
+					self.music_player.increment_random_song_use(song=user_song)
 
 		# rewrite the data file to handle changes (for NTAs)
 		remove(config.data_file)
@@ -103,7 +107,7 @@ class System:
 	def add_new_address(self, address, user_name=config.unknown_user_prefix):
 		# if the address is new, add it to our dict
 		if address not in self.all_addresses:
-			user = User(name=user_name)
+			user = User(system=self, name=user_name)
 			self.all_addresses[address] = user
 
 			with open(config.data_file, 'a') as f:
