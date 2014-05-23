@@ -49,6 +49,6 @@ While Hummingbird is running, the network interface will be unable to connect to
 
 Sometimes Hummingbird receives input from `tcpdump` that I did not anticipate. If this happens, the input will be ignored and it will not detect any MAC addresses (which might mean that devices go undetected). However, if input is not understood by Hummingbird it will automatically be dumped to a file called `tcpdump_dnm.log`.
 
-If you notice `tcpdump_dnm.log` appear, please send it (or even just part of the file) to me  and I will try to fix the problem. If you're not a bot, you should be able to find my email on [my website](http://revolutiontech.ca/) under Computer Services. Feel free to delete the file once you have reported the issue.
+If you notice `tcpdump_dnm.log` appear, please send it (or even just part of the file) to `lucas [at] revolutiontech [dot] ca` and I will try to fix the problem. Feel free to delete the file once you have reported the issue.
 
 Any other bugs to report, suggestions for improvement, feature requests, government secrets, etc. please feel free to send my way. Contributions to the repo are especially welcome!
