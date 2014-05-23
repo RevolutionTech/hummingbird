@@ -78,8 +78,13 @@ class MusicPlayer:
 	def stop_long_song(self, user_name):
 		if self.user_song_currently_playing == user_name:
 			mixer.music.fadeout(config.time_fadeout_song)
+	
+	def queue_song_after_delay(self, user):
+		log(message="Queued {name}'s song {song}.".format(name=user.name, song=user.song))
+		self.song_queue.append(user)
 
 	def queue_song(self, user):
 		if self.ready_to_queue:
-			log(message="Queued {name}'s song {song}.".format(name=user.name, song=user.song))
-			self.song_queue.append(user)
+			log(message="Waiting delay of {delay} seconds to queue {name}'s song.".format(delay=config.time_delay_to_play_song, name=user.name))
+			threading.Timer(config.time_delay_to_play_song, self.queue_song_after_delay, [user]).start()
+
