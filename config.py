@@ -28,7 +28,7 @@ unknown_user_suffix_length = 5
 tcpdump_re_ignore = [
 	"^$",
 	"^(\d{2}:){2}\d{2}.\d+ \[\|802.11\]$",
-	"^(\d{2}:){2}\d{2}.\d+ \d+us tsft short preamble \d+\.?\d? Mb/s \d+ MHz \(0x\d+\) -?\d+dB signal -?\d+dB noise antenna 0 \(H\) Unknown Ctrl SubtypeUnknown Ctrl Subtype$"
+	"^(\d{2}:){2}\d{2}.\d+ \d+us tsft (short preamble )?\d+\.?\d? Mb/s \d+ MHz \(0x\d+\) -?\d+dB signal -?\d+dB noise antenna 0 \(H\) Unknown Ctrl SubtypeUnknown Ctrl Subtype$"
 ]
 tcpdump_re = {
 	# format: key (string) to tuple of regex (string) and list of groups to match (ints)
