@@ -47,5 +47,5 @@ tcpdump_re = {
 }
 
 # Debugging
-wait_to_play = False
+wait_to_play = True
 print_all_MACs = False
