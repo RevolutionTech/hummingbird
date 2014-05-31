@@ -16,6 +16,7 @@ time_fadeout_song = 3000 # in milliseconds
 data_file = "songs.csv"
 audio_dir = "audio/"
 random_subdir = "random/"
+sound_subdir = "sound/"
 tcpdump_did_not_match_log = "tcpdump_dnm.log"
 
 # Data Settings
@@ -46,5 +47,5 @@ tcpdump_re = {
 }
 
 # Debugging
-wait_to_play = True
+wait_to_play = False
 print_all_MACs = False

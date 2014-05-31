@@ -57,6 +57,7 @@ class MusicPlayer:
 		if not self.ready_to_queue:
 			self.ready_to_queue = True
 			log(message="System now ready to play walk-in songs.")
+			self.play_sound(sound_name="activated.wav")
 		threading.Timer(interval=config.time_check_queue, function=self.play_song_on_queue).start()
 
 		if not mixer.music.get_busy():
@@ -86,5 +87,9 @@ class MusicPlayer:
 	def queue_song(self, user):
 		if self.ready_to_queue:
 			log(message="Waiting delay of {delay} seconds to queue {name}'s song.".format(delay=config.time_delay_to_play_song, name=user.name))
+			self.play_sound(sound_name="activity.wav")
 			threading.Timer(config.time_delay_to_play_song, self.queue_song_after_delay, [user]).start()
 
+	def play_sound(self, sound_name):
+		soundDir = config.audio_dir + config.sound_subdir
+		mixer.Sound(soundDir+sound_name).play()

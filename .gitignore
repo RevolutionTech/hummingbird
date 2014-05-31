@@ -4,10 +4,10 @@
 
 # User-specific #
 #################
+*.mp3
 tcpdump_dnm.log
 tcpdump_error.log
 songs.csv
-audio/
 
 # OS generated files #
 ######################
