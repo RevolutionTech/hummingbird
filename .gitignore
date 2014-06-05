@@ -2,12 +2,15 @@
 ###################
 *.pyc
 
+# Environment #
+###############
+env/
+
 # User-specific #
 #################
 *.mp3
 tcpdump_dnm.log
 tcpdump_error.log
-songs.csv
 
 # OS generated files #
 ######################
@@ -18,3 +21,7 @@ songs.csv
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Secure files #
+################
+hummingbird/hummingbird/settings_secret.py
