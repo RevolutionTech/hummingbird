@@ -17,6 +17,8 @@ Hummingbird requires [MySQL](http://www.mysql.com/), which you can install on de
 
 `sudo apt-get install mysql-server mysql-client`
 
+Once you have installed mysql, you should create a database for Hummingbird and then store the user credentials to the database (`DATABASE_USER` and `DATABASE_PASSWORD`) in a file called `hummingbird/settings/settings_secret.py`.
+
 I recommend using a virtual environment for Hummingbird. If you don't have it already, you can install [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html) globally with pip:
 
 `sudo pip install virtualenv`
@@ -53,7 +55,9 @@ Additional configuration is available by modifying the `config.py` file.
 
 Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `/init_hummingbird`. This will generate a persistent instance if the network manager and media player, so you will not want to do this multiple times while the server is running.
 
-While Hummingbird is running, the network interface may be unable to connect to the router. This could mean that *you will not be able to connect to the Internet*. Once you are done using Hummingbird, you may have to turn your Wifi off and back on again to resume normal operation.
+The server will then make a `sudo` call to `tcpdump`, so the server will then be hanging waiting for you to type in the password for sudo in the terminal window that you ran `runserver` in.
+
+Note that while Hummingbird is running, the network interface may be unable to connect to the router. This could mean that *you will not be able to connect to the Internet*. Once you are done using Hummingbird, you may have to turn your Wifi off and back on again to resume normal operation.
 
 ## Improve Hummingbird
 
