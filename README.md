@@ -53,7 +53,7 @@ Additional configuration is available by modifying the `config.py` file.
 
 ## Running
 
-Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `/init_hummingbird`. This will generate a persistent instance if the network manager and media player, so you will not want to do this multiple times while the server is running.
+Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `/init_hummingbird`. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running.
 
 The server will then make a `sudo` call to `tcpdump`, so the server will then be hanging waiting for you to type in the password for sudo in the terminal window that you ran `runserver` in.
 
