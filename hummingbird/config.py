@@ -2,8 +2,8 @@ import datetime
 
 # Startup Settings
 clear_queue = True
-all_users_no_activity_today = False
-wait_to_play = True
+all_users_no_activity_today = True
+wait_to_play = False
 
 # Time Settings
 time_reset_time = datetime.time(hour=4, minute=0) # 4:00am
@@ -20,7 +20,11 @@ random_subdir = "random/"
 sound_subdir = "sound/"
 tcpdump_did_not_match_log = "tcpdump_dnm.log"
 
+# Log Settings
+log_mac_addresses = False
+
 # Data Settings
+user_password_min_length = 5
 song_title_max_length = 35
 song_artist_max_length = 20
 song_album_max_length = 20
@@ -45,6 +49,3 @@ tcpdump_re = {
 	'power_save_poll': ("^(\d{2}:){2}\d{2}.\d+ .* BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .* TA:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$", [2, 4]),
 	'noise_antenna': ("^(\d{2}:){2}\d{2}.\d+ .* RA:Broadcast BSSID:(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}) .*$", [2])
 }
-
-# Debugging
-print_all_MACs = False

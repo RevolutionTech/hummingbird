@@ -1,0 +1,39 @@
+{% load staticfiles %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+	<head>
+	    <title>{% block title %}{% endblock %}</title>
+	    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css" charset="utf-8" />
+		<script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+		<script type="text/javascript" src="{% static "js/jquery.validate.min.js" %}"></script>
+		<script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
+		<script type="text/javascript">
+			{% block variables %}{% endblock %}
+		</script>
+		<script type="text/javascript" src="{% block javascript %}{% endblock %}"></script>
+	</head>
+	<body>
+		<div class="text-center"><h2>Hummingbird 2.0</h2></div>
+		{% block navigation %}
+		<br>
+		<ul class="nav nav-tabs nav-justified">
+			{% block tabs %}
+			{% endblock %}
+		</ul>
+		<br>
+		{% endblock %}
+		<div class="container">
+			{% block content %}
+			{% endblock %}
+		</div>
+		<hr>
+		<div class="row">
+			<div align="center">
+		  		<img src="{% static "img/hummingbird.png" %}" alt="Hummingbird" width="40%">
+		  		<br><br>
+		  		<a href="mailto:{{ feedback_email }}" class="btnFeedback btn btn-primary" role="button" id="feedback">Feedback</a>
+		  		<br>
+		  	</div>
+		</div>
+	</body>
+</html>

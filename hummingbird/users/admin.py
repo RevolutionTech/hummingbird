@@ -3,9 +3,9 @@ import datetime
 from django.contrib import admin
 
 import config
-from utils import log, print_MAC_address
+from utils import log, log_MAC_address
 from users.models import *
-from songs.models import Song
+from songs.models import Song, SongAssignment
 from network.admin import NetworkManager
 from songs.admin import SongManager
 
@@ -22,30 +22,73 @@ class UserManager:
 		self.song_manager.init_mixer()
 		self.network_manager.init_network()
 
-	def create_user(self, email, mac_address, first_name, last_name='', username=None, password=None, delay=config.time_default_delay_to_play_song, song_title=None, song_artist="n/a", song_album="n/a", song_random=False, walkin_length=config.time_default_max_song_length):
+	def create_user(self, create_email, create_mac_address, create_first_name, create_last_name='', create_username=None, create_password=None, create_password_confirm=None, create_delay=config.time_default_delay_to_play_song, create_song_id=None):
+		# TODO: Perform checks
+
 		# get dynamic defaults
-		if not username:
-			username = first_name
-		if not password:
-			password = mac_address
+		if not create_username:
+			create_username = create_first_name
+		if not create_password:
+			create_password = create_mac_address
 
 		# create user and userprofile
-		user = User.objects.create_user(username=username, email=email, password=password)
-		user.first_name = first_name
-		user.last_name = last_name
+		user = User.objects.create_user(username=create_username, email=create_email, password=create_password)
+		user.first_name = create_first_name
+		user.last_name = create_last_name
 		user.save()
-		up = UserProfile.objects.create(user=user, mac_address=mac_address, delay=delay)
+		up = UserProfile.objects.create(user=user, mac_address=create_mac_address, delay=create_delay)
 		
 		# assign song (randomly if not given)
-		if not song_title:
+		if not create_song_id:
 			self.song_manager.assign_random_song(user=up)
 		else:
-			self.song_manager.add_uploaded_song_and_assign(user=up, title=song_title, artist=song_artist, album=song_album, random=song_random, walkin_length=walkin_length)
+			self.song_manager.assign_song(user=up, song=Song.objects.get(id=create_song_id))
 		
 		return up
 
+	def update_user(self, user, email=None, username=None, password=None, password_confirm=None, first_name=None, last_name=None, mac_address=None, song_id=None, delay=None):
+		# Perform checks
+		if email and email != user.user.email and len(User.objects.filter(email=email)) > 0:
+			raise AssertionError("The email {email} has already been registered by another user.".format(email=email))
+		if username and username != user.user.username and len(User.objects.filter(username=username)) > 0:
+	 		raise AssertionError("The username {username} has already been registered by another user.".format(username=username))
+		if (password or password_confirm) and (not password or not password_confirm):
+			raise AssertionError("Both the password and password confirm fields must be filled in to update your password.")
+		if password and len(password) < config.user_password_min_length:
+			raise AssertionError("Password must be at least {password_min_length} characters long.".format(password_min_length=config.user_password_min_length))
+		if password and password != password_confirm:
+			raise AssertionError("Password and password confirm fields do not match.")
+		if mac_address and mac_address != user.mac_address and len(UserProfile.objects.filter(mac_address=mac_address)) > 0:
+			raise AssertionError("The mac address {mac_address} has already been registered by another user.".format(mac_address=mac_address))
+
+		# Update user
+		if email:
+			user.user.email = email
+		if username:	
+			user.user.username = username
+		if password and password_confirm:
+			user.user.set_password(password)
+		if first_name:
+			user.user.first_name = first_name
+		if last_name:
+			user.user.last_name = last_name
+		if mac_address:
+			user.mac_address = mac_address
+		if song_id is not None:
+			if song_id == 0:
+				self.song_manager.assign_random_song(user=user)
+			else:
+				user.walkin_song, created = SongAssignment.objects.get_or_create(user=user, song=Song.objects.get(id=song_id))
+		if delay is not None:
+			user.delay = delay
+		
+		user.user.save()
+		user.save()
+		return user
+
 	def MAC_detected(self, address):
-		print_MAC_address(address=address)
+		if config.log_mac_addresses:
+			log_MAC_address(address=address)
 		try:
 			userprofile = UserProfile.objects.get(mac_address=address)
 			if userprofile.has_not_played_today():

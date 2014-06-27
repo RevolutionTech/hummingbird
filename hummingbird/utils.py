@@ -1,18 +1,17 @@
 import datetime
 
-import config
 from users.models import UserProfile
+from network.models import ActivityLog
 
-def log(message):
-	print "[{timestamp}] {message}".format(timestamp=datetime.datetime.now().replace(microsecond=0), message=message)
+def log(message, MAC=False):
+	ActivityLog.objects.create(message=message, mac=MAC)
 
-def print_MAC_address(address):
-	if config.print_all_MACs:
-		try:
-			userprofile = UserProfile.objects.get(mac_address=address)
-			log(message="MAC detected: {address}; owned by {name}".format(address=address, name=userprofile.user.first_name))
-		except UserProfile.DoesNotExist:
-			log(message="MAC detected: {address}".format(address=address))
+def log_MAC_address(address):
+	try:
+		userprofile = UserProfile.objects.get(mac_address=address)
+		log(message="MAC detected: {address}; owned by {name}".format(address=address, name=userprofile.user.username), MAC=True)
+	except UserProfile.DoesNotExist:
+		log(message="MAC detected: {address}".format(address=address), MAC=True)
 
 def create_kwargs(request, params):
 		kwargs = {}
@@ -22,9 +21,10 @@ def create_kwargs(request, params):
 				name, _type = param
 			else:
 				name, _type, optional = param
-			try:
+			if name in request.POST:
+				kwargs[name] = _type(request.POST[name])
+			elif name in request.GET:
 				kwargs[name] = _type(request.GET[name])
-			except KeyError:
-				if not optional:
-					raise AssertionError("Expected parameter {param}".format(param=name))
+			elif not optional:
+				raise AssertionError("Expected parameter {param}".format(param=name))
 		return kwargs

@@ -8,13 +8,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
+import hummingbird.settings_environment as senv
 import hummingbird.settings_secret as secret
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-SECRET_KEY = '+vftj9tmztx-uy(k-w*t_q-(#fh57!x+4s_50*s^^+5_2p!2gh'
+SECRET_KEY = secret.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -65,5 +66,10 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = False
 
-# Static files (CSS, JavaScript, Images)
+# Templates and static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (senv.STATIC_DIR,)
+TEMPLATE_DIRS = (senv.TEMPLATE_DIR,)
+
+# Contact
+FEEDBACK_EMAIL = senv.FEEDBACK_EMAIL

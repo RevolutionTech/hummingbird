@@ -2,12 +2,9 @@
 ###################
 *.pyc
 
-# Environment #
-###############
-env/
-
 # User-specific #
 #################
+hummingbird/hummingbird/settings_environment.py
 *.mp3
 tcpdump_dnm.log
 tcpdump_error.log

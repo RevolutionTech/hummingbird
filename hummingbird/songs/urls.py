@@ -5,6 +5,6 @@ from songs.views import SongView
 sv = SongView()
 
 urlpatterns = patterns('',
-	#url(r'^create_user/$', uv.create_user, name='create_user'),
-	#url(r'^login_user/$', uv.login_user, name='login_user'),
+	url(r'^assign_song/$', sv.assign_song, name='assign_song'),
+	url(r'^add_uploaded_song/$', sv.add_uploaded_song, name='add_uploaded_song'),
 )

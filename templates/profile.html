@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Profile{% endblock %}
+
+{% block variables %}
+var firstName = "{{ firstName }}";
+var lastName = "{{ lastName }}";
+var email = "{{ email }}";
+var MAC = "{{ MAC }}";
+var username = "{{ username }}";
+var songs = {
+	0: {
+		title: "Let Hummingbird Choose!",
+		artist: null,
+		album: null,
+		length: null
+	}
+};
+{% for song in songs %}
+	songs[{{ song.id }}] = {
+		title: "{{ song.title }}",
+		artist: "{{ song.artist }}",
+		album: "{{ song.album }}",
+		length: {{ song.length }}
+	};
+{% endfor %}
+var walkin_song = {{ walkin_song }};
+var delay = {{ delay }};
+{% endblock %}
+
+{% block javascript %}{% static "js/profile.js" %}{% endblock %}
+
+{% block tabs %}
+<li><a href="/activity">Activity</a></li>
+<li class="active"><a href="#">Profile</a></li>
+<li><a href="/logout">Logout</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-sm-6">
+		&nbsp;
+	</div>
+	<div class="col-sm-6">
+		<div align="right">
+    		<button type="button" class="btnCancel btn btn-info">Cancel</button>
+    		<button type="button" class="btnDone btn btn-success">Done</button>
+    		<button type="button" class="btnEdit btn btn-primary">Edit</button>
+		</div>
+	</div>
+</div>
+<br>
+<form class="form-horizontal" role="form" id="profile-form" method="POST" action="/profile/">
+	{% csrf_token %}
+	<div class="form-group">
+		<label for="profileName" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-user"></span>
+			&nbsp;Name
+		</label>
+		<div class="txt txtName col-sm-10">
+			<p class="form-control-static"></p>
+		</div>
+		<div class="edit editName">
+			<div class="col-sm-5">
+				<input type="text" class="editFirstName form-control" name="first_name" id="profileFirstName">
+			</div>
+			<div class="col-sm-5">
+				<input type="text" class="editLastName form-control" name="last_name" id="profileLastName">
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="profileEmail" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-envelope"></span>
+			&nbsp;Email
+		</label>
+		<div class="col-sm-10">
+			<p class="txt txtEmail form-control-static"></p>
+			<input type="email" class="edit editEmail form-control" name="email" id="profileEmail">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="profileMAC" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-phone"></span>
+			&nbsp;MAC Address
+		</label>
+		<div class="col-sm-10">
+			<p class="txt txtMAC form-control-static"></p>
+			<input type="text" class="edit editMAC form-control" name="mac_address" id="profileMAC">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="profileUsername" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-user"></span>
+			&nbsp;Username
+		</label>
+		<div class="col-sm-10">
+			<p class="txt txtUsername form-control-static"></p>
+			<input type="text" class="edit editUsername form-control" name="username" id="profileUsername">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="profilePassword" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-asterisk"></span>
+			&nbsp;Password
+		</label>
+		<div class="col-sm-10">
+			<p class="txt txtPassword form-control-static">********</p>
+			<input type="password" class="edit editPassword form-control" name="password" id="profilePassword">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="profilePasswordConfirm" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-asterisk"></span>
+			&nbsp;Password Confirm
+		</label>
+		<div class="col-sm-10">
+			<p class="txt txtPasswordConfirm form-control-static">********</p>
+			<input type="password" class="edit editPasswordConfirm form-control" name="password_confirm" id="profilePasswordConfirm">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="profileSong" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-music"></span>
+			&nbsp;Walk-in Song
+		</label>
+		<p class="txt txtSong col-sm-10 form-control-static"></p>
+		<div class="edit editSong">
+			<div class="col-sm-2 dropdown">
+			    <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle" name="song_id"></button>
+			    <ul class="dropdown-menu"></ul>
+			</div>
+			<p class="col-sm-8 form-control-static"></p>
+			<input type="hidden" name="song_id" id="profileWalkinSong" value={{ walkin_song }}>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="profileDelay" class="col-sm-2 control-label">
+			<span class="glyphicon glyphicon-time"></span>
+			&nbsp;Delay (s)
+		</label>
+		<div class="col-sm-10">
+			<p class="txt txtDelay form-control-static"></p>
+			<input type="number" class="edit editDelay form-control" name="delay" id="profileDelay" min="0">
+		</div>
+	</div>
+</form>
+{% endblock %}

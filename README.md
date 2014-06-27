@@ -13,29 +13,51 @@ Hummingbird is designed to run continuously on a server connected to speakers an
 
 ## Prerequisites
 
-Hummingbird requires [MySQL](http://www.mysql.com/), which you can install on debian with:
+To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.org/CaptureSetup/WLAN#Turning_on_monitor_mode) (sometimes called promiscuous mode) on the network interface being used by the server. This is so Hummingbird can read packets from other devices in order to detect when a new device is nearby.
 
-`sudo apt-get install mysql-server mysql-client`
+Additionally, Hummingbird requires [MySQL](http://www.mysql.com/), which you can install on debian with:
+
+`sudo apt-get -y install mysql-server mysql-client`
+
+`sudo apt-get -y install libmysqlclient-dev`
 
 Once you have installed mysql, you should create a database for Hummingbird and then store the user credentials to the database (`DATABASE_USER` and `DATABASE_PASSWORD`) in a file called `hummingbird/settings/settings_secret.py`.
 
-I recommend using a virtual environment for Hummingbird. If you don't have it already, you can install [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html) globally with pip:
+I recommend using a virtual environment for Hummingbird. If you don't have it already, you can install [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html) and virtualenvwrapper globally with pip:
 
 `sudo pip install virtualenv`
 
-Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), [django](https://www.djangoproject.com/), and [south](http://south.readthedocs.org/en/latest/installation.html):
+`sudo pip install virtualenvwrapper`
 
-`sudo apt-get install python-pygame`
+[Update your .profile or .bashrc file](http://virtualenvwrapper.readthedocs.org/en/latest/install.html#shell-startup-file) to create new environment variables for virtualenvwrapper and then create and activate your virtual environment with:
+
+`mkvirtualenv hummingbird`
+
+`workon hummingbird`
+
+## Installation
+
+Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), MySQL-python, [django](https://www.djangoproject.com/), [south](http://south.readthedocs.org/en/latest/installation.html), and django-audiofield:
+
+`sudo apt-get -y install libsox-fmt-mp3 libsox-fmt-all mpg321 dir2ogg libav-tools`
+
+`sudo apt-get -y build-dep python-pygame`
+
+`yes y | pip install git+http://github.com/xamox/pygame`
+
+`pip install MySQL-python`
 
 `pip install django`
 
 `pip install south`
 
+`pip install django-audiofield`
+
 With everything installed, you will then have to create the database tables, which you can do with:
 
-`./manage.py migrate`
+`./manage.py syncdb`
 
-To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.org/CaptureSetup/WLAN#Turning_on_monitor_mode) (sometimes called promiscuous mode) on the network interface being used by the server. This is so Hummingbird can read packets from other devices in order to detect when a new device is nearby.
+`./manage.py migrate`
 
 ## Configuration
 

@@ -8,9 +8,12 @@ uv = UserView()
 admin.autodiscover()
 
 urlpatterns = patterns('',
+	url(r'^$', uv.login, name='login'),
     url(r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
     url(r'^init_hummingbird/', uv.init_hummingbird, name='init hummingbird'),
-    url(r'^users/', include('users.urls')),
+    url(r'^activity/', uv.activity, name='activity'),
+    url(r'^profile/', uv.profile, name='profile'),
+    url(r'^logout/', uv.logout, name='logout'),
     url(r'^songs/', include('songs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
