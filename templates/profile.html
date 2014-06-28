@@ -51,7 +51,7 @@ var delay = {{ delay }};
 	</div>
 </div>
 <br>
-<form class="form-horizontal" role="form" id="profile-form" method="POST" action="/profile/">
+<form class="form-horizontal" role="form" id="profile-form" method="POST" action="/profile/" enctype="multipart/form-data">
 	{% csrf_token %}
 	<div class="form-group">
 		<label for="profileName" class="col-sm-2 control-label">
@@ -124,15 +124,26 @@ var delay = {{ delay }};
 		<label for="profileSong" class="col-sm-2 control-label">
 			<span class="glyphicon glyphicon-music"></span>
 			&nbsp;Walk-in Song
-		</label>
+		</label>		
 		<p class="txt txtSong col-sm-10 form-control-static"></p>
-		<div class="edit editSong">
+		<div class="edit col-sm-3 btn-group">
+		  <button type="button" class="editSongBtnSelect btn btn-default">Select a song</button>
+		  <button type="button" class="editSongBtnUpload btn btn-default">Upload your own</button>
+		  <input type="hidden" name="song_choice" id="profileWalkinSongChoice" value="select">
+		</div>
+		<div class="edit editSongSelect">
 			<div class="col-sm-2 dropdown">
 			    <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle" name="song_id"></button>
 			    <ul class="dropdown-menu"></ul>
 			</div>
-			<p class="col-sm-8 form-control-static"></p>
+			<p class="col-sm-5 form-control-static"></p>
 			<input type="hidden" name="song_id" id="profileWalkinSong" value={{ walkin_song }}>
+		</div>
+		<div class="edit editSongUpload col-sm-7 form-control-static">
+			<input type="file" name="song_upload" />
+			<input type="hidden" name="convert_type" value="0">
+			<input type="hidden" name="channel_type" value="0">
+			<input type="hidden" name="freq_type" value="0">
 		</div>
 	</div>
 	<div class="form-group">

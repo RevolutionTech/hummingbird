@@ -20,7 +20,7 @@ class UserView(View):
 
 	def init_hummingbird(self, request):
 		self.um.init_hummingbird()
-		html = "<html><body>Hummingbird is now activated.</body></html>"
+		html = "<html><body>Hummingbird is hatching.</body></html>"
 		return HttpResponse(html)
 
 	def get_songs(self):
@@ -97,11 +97,15 @@ class UserView(View):
 		if not request.user.is_authenticated():
 			return HttpResponseRedirect('/')
 
+		num_messages = ActivityLog.objects.all().count()
+		activity_log = ActivityLog.objects.all().order_by('id')
+		if num_messages > config.activity_events_per_page:
+			activity_log = activity_log[num_messages-config.activity_events_per_page:]
 		messages = [{
 			'id': message.id,
 			'date': message.date,
 			'message': message.message,
-		} for message in ActivityLog.objects.all()]
+		} for message in activity_log]
 		
 		html = get_template('activity.html').render(RequestContext(request, {
 			'log_messages': messages,
@@ -113,7 +117,7 @@ class UserView(View):
 		if not request.user.is_authenticated():
 			return HttpResponseRedirect('/')
 		
-		# Get data from webpage
+		# Get basic data from webpage
 		params = [	('first_name', unicode),
 					('last_name', unicode),
 					('email', unicode),
@@ -125,6 +129,14 @@ class UserView(View):
 					('delay', int),]
 		# TODO: Server-side validation
 		kwargs = create_kwargs(request=request, params=params)
+
+		# Get song upload from webpage
+		if 'song_choice' in request.POST:
+			if request.POST['song_choice'] != 'select' and 'song_id' in kwargs:
+				del kwargs['song_id']
+			if request.POST['song_choice'] == 'upload' and 'song_upload' in request.FILES:
+				kwargs['song_upload'] = request.FILES['song_upload']
+
 		up = request.user.userprofile
 		if kwargs:
 			kwargs['user'] = up

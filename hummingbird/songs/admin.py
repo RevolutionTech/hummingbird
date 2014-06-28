@@ -16,6 +16,7 @@ class SongManager:
 	'''
 	def init_mixer(self):
 		mixer.init()
+		self.play_sound(sound_name="hatching.wav")
 		self.ready_to_queue = False
 		self.user_song_currently_playing = None
 
@@ -50,7 +51,8 @@ class SongManager:
 		if not self.ready_to_queue:
 			self.ready_to_queue = True
 			log(message="System now ready to play walk-in songs.")
-			self.play_sound(sound_name="activated.wav")
+			mixer.stop()
+			self.play_sound(sound_name="ready.wav")
 
 		if not mixer.music.get_busy():
 			song_queue = SongQueue.objects.filter(played__isnull=True)
@@ -68,10 +70,7 @@ class SongManager:
 				threading.Timer(song_to_play_assignment.walkin_length, self.stop_long_song, [user_to_play]).start()
 				# play the song
 				log(message="Playing {song}.".format(song=song_to_play_assignment))
-				songDir = config.audio_dir
-				if song_to_play_song.isRandom():
-					songDir += config.random_subdir
-				mixer.music.load(songDir + song_to_play_song.title)
+				mixer.music.load(song_to_play_song.audiofile.file)
 				mixer.music.play()
 			else:
 				self.user_song_currently_playing = None
@@ -85,8 +84,8 @@ class SongManager:
 	'''
 	Song Manager
 	'''
-	def add_uploaded_song(self, title, artist="n/a", album="n/a", random=False):
-		song, created = Song.objects.get_or_create(title=title, artist=artist, album=album, random=random)
+	def add_uploaded_song(self, title, audiofile, artist="n/a", album="n/a", random=False):
+		song, created = Song.objects.get_or_create(title=title, audiofile=audiofile, artist=artist, album=album, random=random)
 		return song
 
 	def assign_walkin_song(self, user, song, walkin_length=config.time_default_max_song_length):
@@ -102,7 +101,7 @@ class SongManager:
 			raise AssertionError("A random song could not be assigned because there are no random songs in the system.")
 		self.assign_walkin_song(user=user, song=random.choice(random_list))
 
-	def add_uploaded_song_and_assign(self, user, title, artist="n/a", album="n/a", random=False, walkin_length=config.time_default_max_song_length):
-		song = self.add_uploaded_song(title=title, artist=artist, album=album, random=random)
+	def add_uploaded_song_and_assign(self, user, title, audiofile, artist="n/a", album="n/a", random=False, walkin_length=config.time_default_max_song_length):
+		song = self.add_uploaded_song(title=title, audiofile=audiofile, artist=artist, album=album, random=random)
 		self.assign_walkin_song(user=user, song=song, walkin_length=walkin_length)
 	

@@ -8,6 +8,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
+import config
 import hummingbird.settings_environment as senv
 import hummingbird.settings_secret as secret
 
@@ -31,6 +32,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
+    'audiofield',
     'users',
     'songs',
     'network',
@@ -42,6 +44,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'audiofield.middleware.threadlocals.ThreadLocals',
 )
 ROOT_URLCONF = 'hummingbird.urls'
 WSGI_APPLICATION = 'hummingbird.wsgi.application'
@@ -73,3 +76,9 @@ TEMPLATE_DIRS = (senv.TEMPLATE_DIR,)
 
 # Contact
 FEEDBACK_EMAIL = senv.FEEDBACK_EMAIL
+
+# Audiofield
+MEDIA_ROOT = BASE_DIR + '/' + config.audio_dir
+CHANNEL_TYPE_VALUE = 0 # 0-Keep original, 1-Mono, 2-Stereo
+FREQ_TYPE_VALUE = 8000 # 0-Keep original, 8000-8000Hz, 16000-16000Hz, 22050-22050Hz, 44100-44100Hz, 48000-48000Hz, 96000-96000Hz
+CONVERT_TYPE_VALUE = 0 # 0-Keep original, 1-Convert to MP3, 2-Convert to WAV, 3-Convert to OGG

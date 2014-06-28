@@ -17,21 +17,19 @@ To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.
 
 Additionally, Hummingbird requires [MySQL](http://www.mysql.com/), which you can install on debian with:
 
-`sudo apt-get -y install mysql-server mysql-client`
-
-`sudo apt-get -y install libmysqlclient-dev`
+`sudo apt-get -y install mysql-server mysql-client libmysqlclient-dev`
 
 Once you have installed mysql, you should create a database for Hummingbird and then store the user credentials to the database (`DATABASE_USER` and `DATABASE_PASSWORD`) in a file called `hummingbird/settings/settings_secret.py`.
 
 I recommend using a virtual environment for Hummingbird. If you don't have it already, you can install [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html) and virtualenvwrapper globally with pip:
 
-`sudo pip install virtualenv`
-
-`sudo pip install virtualenvwrapper`
+`sudo pip install virtualenv virtualenvwrapper`
 
 [Update your .profile or .bashrc file](http://virtualenvwrapper.readthedocs.org/en/latest/install.html#shell-startup-file) to create new environment variables for virtualenvwrapper and then create and activate your virtual environment with:
 
 `mkvirtualenv hummingbird`
+
+In the future you can reactivate the virtual environment with:
 
 `workon hummingbird`
 
@@ -45,13 +43,7 @@ Then in your virtual environment, you will need to install [pygame](http://www.p
 
 `yes y | pip install git+http://github.com/xamox/pygame`
 
-`pip install MySQL-python`
-
-`pip install django`
-
-`pip install south`
-
-`pip install django-audiofield`
+`pip install MySQL-python django south django-audiofield`
 
 With everything installed, you will then have to create the database tables, which you can do with:
 
@@ -61,15 +53,9 @@ With everything installed, you will then have to create the database tables, whi
 
 ## Configuration
 
-Custom walk-in songs should be stored in the subdirectory `audio/`. Inside that directory, there should be another subdirectory `random/` where additional songs are included for users that do not provide a walk-in song.
-
 The server can be run on port 8000 with `./manage.py runserver 0.0.0.0:8000`. Then the server can be reached from the browser at `http://0.0.0.0:8000/`.
 
-You can create a user for Joe and assign him the walk-in song `audio/joe.mp3` by hitting the URL: `/users/create_user?email=jsmith@email.com&mac_address=aa:bb:cc:dd:ee:ff&first_name=Joe&song_title=joe.mp3`. Additional parameters are available, such as the delay before the walkin-song plays, the length of the walk-in song, and artist and album of the walk-in song, and more.
-
-If `song_title` is not specified, the user created will be assigned a random song (which will cause an exception if there are no random songs in Hummingbird).
-
-Changing values in the database requires accessing the shell via `./manage.py shell`. You must also access the shell to add new songs for users or random songs initially unassigned to any users.
+Hitting that URL should reach the user interface where users can create accounts, upload new songs, and modify their profile information.
 
 Additional configuration is available by modifying the `config.py` file.
 

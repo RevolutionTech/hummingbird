@@ -66,6 +66,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Song'},
             'album': ('django.db.models.fields.CharField', [], {'default': "'n/a'", 'max_length': '20'}),
             'artist': ('django.db.models.fields.CharField', [], {'default': "'n/a'", 'max_length': '20'}),
+            'audiofile': ('audiofield.fields.AudioField', [], {'ext_whitelist': "['.mp3', '.wav', '.ogg']", 'max_length': '100'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'random': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '35'})

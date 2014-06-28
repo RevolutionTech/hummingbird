@@ -18,7 +18,7 @@ $(document).ready(function(){
 		if (song["length"]){
 			songHelpText += " (" + song["length"] + "s)";
 		}
-		$('.editSong > p').html(songHelpText);
+		$('.editSongSelect > p').html(songHelpText);
 		var dropdown_menu_songs = "";
 		$.each(songs, function(key, val){
 			if (key != walkin_song){
@@ -44,6 +44,12 @@ $(document).ready(function(){
 		$('.editDelay').val(delay);
 
 		toggleProfileElements();
+
+		// hide song upload
+		$('.editSongBtnSelect').addClass('active');
+		$('.editSongBtnUpload').removeClass('active');
+		$('.editSongUpload').hide();
+		$('#profileWalkinSongChoice').val('select');
 	};
 	function showProfile(save){
 		// save values
@@ -79,6 +85,10 @@ $(document).ready(function(){
 		$('.txtDelay').html(delay);
 
 		toggleProfileElements();
+
+		// hide song select and upload
+		$('.editSongSelect').hide();
+		$('.editSongUpload').hide();
 	};
 	var profileForm = $('#profile-form').validate({
 		rules: {
@@ -121,6 +131,20 @@ $(document).ready(function(){
 			$('#profile-form').submit();
 			showProfile(true);
 		}
+	});
+	$('.editSongBtnSelect').click(function(){
+		$('.editSongBtnSelect').addClass('active');
+		$('.editSongBtnUpload').removeClass('active');
+		$('.editSongSelect').show();
+		$('.editSongUpload').hide();
+		$('#profileWalkinSongChoice').val('select');
+	});
+	$('.editSongBtnUpload').click(function(){
+		$('.editSongBtnSelect').removeClass('active');
+		$('.editSongBtnUpload').addClass('active');
+		$('.editSongSelect').hide();
+		$('.editSongUpload').show();
+		$('#profileWalkinSongChoice').val('upload');
 	});
 	$('.dropdown-menu').on('click', 'li', function(){
 		updateDropdownSongs($(this).val());

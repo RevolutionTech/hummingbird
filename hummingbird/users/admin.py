@@ -42,11 +42,11 @@ class UserManager:
 		if not create_song_id:
 			self.song_manager.assign_random_song(user=up)
 		else:
-			self.song_manager.assign_song(user=up, song=Song.objects.get(id=create_song_id))
+			self.song_manager.assign_walkin_song(user=up, song=Song.objects.get(id=create_song_id))
 		
 		return up
 
-	def update_user(self, user, email=None, username=None, password=None, password_confirm=None, first_name=None, last_name=None, mac_address=None, song_id=None, delay=None):
+	def update_user(self, user, email=None, username=None, password=None, password_confirm=None, first_name=None, last_name=None, mac_address=None, song_id=None, song_upload=None, delay=None):
 		# Perform checks
 		if email and email != user.user.email and len(User.objects.filter(email=email)) > 0:
 			raise AssertionError("The email {email} has already been registered by another user.".format(email=email))
@@ -74,7 +74,10 @@ class UserManager:
 			user.user.last_name = last_name
 		if mac_address:
 			user.mac_address = mac_address
-		if song_id is not None:
+		if song_upload:
+			new_song = Song.objects.create(title=song_upload.name, audiofile=song_upload)
+			user.walkin_song = SongAssignment.objects.create(user=user, song=new_song)
+		elif song_id is not None:
 			if song_id == 0:
 				self.song_manager.assign_random_song(user=user)
 			else:

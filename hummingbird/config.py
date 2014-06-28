@@ -16,11 +16,11 @@ time_fadeout_song = 3000 # in milliseconds
 
 # User Files
 audio_dir = "audio/"
-random_subdir = "random/"
 sound_subdir = "sound/"
 tcpdump_did_not_match_log = "tcpdump_dnm.log"
 
 # Log Settings
+activity_events_per_page = 15
 log_mac_addresses = False
 
 # Data Settings
