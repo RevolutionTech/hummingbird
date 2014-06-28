@@ -2,8 +2,8 @@ import datetime
 
 # Startup Settings
 clear_queue = True
-all_users_no_activity_today = True
-wait_to_play = False
+all_users_no_activity_today = False
+wait_to_play = True
 
 # Time Settings
 time_reset_time = datetime.time(hour=4, minute=0) # 4:00am
