@@ -13,13 +13,15 @@ Hummingbird is designed to run continuously on a server connected to speakers an
 
 ## Prerequisites
 
+**Note: The setup portion of this README assumes the reader has some basic knowledge of Django.**
+
 To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.org/CaptureSetup/WLAN#Turning_on_monitor_mode) (sometimes called promiscuous mode) on the network interface being used by the server. This is so Hummingbird can read packets from other devices in order to detect when a new device is nearby.
 
 Additionally, Hummingbird requires [MySQL](http://www.mysql.com/), which you can install on debian with:
 
 `sudo apt-get -y install mysql-server mysql-client libmysqlclient-dev`
 
-Once you have installed mysql, you should create a database for Hummingbird and then store the user credentials to the database (`DATABASE_USER` and `DATABASE_PASSWORD`) in a file called `hummingbird/settings/settings_secret.py`.
+Remember the database credentials, because we will need them later in the setup.
 
 I recommend using a virtual environment for Hummingbird. If you don't have it already, you can install [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html) and virtualenvwrapper globally with pip:
 
@@ -45,15 +47,24 @@ Then in your virtual environment, you will need to install [pygame](http://www.p
 
 `pip install MySQL-python django south django-audiofield`
 
-With everything installed, you will then have to create the database tables, which you can do with:
-
-`./manage.py syncdb`
-
-`./manage.py migrate`
-
 ## Configuration
 
-The server can be run on port 8000 with `./manage.py runserver 0.0.0.0:8000`. Then the server can be reached from the browser at `http://0.0.0.0:8000/`.
+Next we will need to create a file in the same directory as `settings.py` called `settings_secret.py`. This is where we will store all of the settings that are specific to your instance of Hummingbird. Most of these settings should be only known to you. Your file should define a secret key, the database credentials, and an email where you (as an administrator of the Hummingbird instance) can be reached. Your `settings_secret.py` file might look something like:
+
+    SECRET_KEY = '-3f5yh&(s5%9uigtx^yn=t_woj0@90__fr!t2b*96f5xoyzb%b'
+    DATABASE_USER = 'root'
+    DATABASE_PASSWORD = 'abc123'
+    FEEDBACK_EMAIL = 'admin+hummingbird@company.com'
+
+Of course you should [generate your own secret key](http://stackoverflow.com/a/16630719) and use a more secure password for your database.
+
+With everything installed and all files in place, you may now create the database tables. You can do this with:
+
+`python manage.py syncdb`
+
+`python manage.py migrate`
+
+The server can be run on port 8000 with `python manage.py runserver 0.0.0.0:8000`. Then the server can be reached from the browser at `http://0.0.0.0:8000/`.
 
 Hitting that URL should reach the user interface where users can create accounts, upload new songs, and modify their profile information.
 
@@ -61,7 +72,7 @@ Additional configuration is available by modifying the `config.py` file.
 
 ## Running
 
-Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `/init_hummingbird`. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running.
+Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `/init_hummingbird`. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running. Watch out for Chrome pre-fetching, it may hit the URL before you actually request the page!
 
 The server will then make a `sudo` call to `tcpdump`, so the server will then be hanging waiting for you to type in the password for sudo in the terminal window that you ran `runserver` in.
 

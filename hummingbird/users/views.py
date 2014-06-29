@@ -20,8 +20,7 @@ class UserView(View):
 
 	def init_hummingbird(self, request):
 		self.um.init_hummingbird()
-		html = "<html><body>Hummingbird is hatching.</body></html>"
-		return HttpResponse(html)
+		return HttpResponseRedirect('/')
 
 	def get_songs(self):
 		return [{
@@ -127,7 +126,6 @@ class UserView(View):
 					('password_confirm', unicode),
 					('song_id', int),
 					('delay', int),]
-		# TODO: Server-side validation
 		kwargs = create_kwargs(request=request, params=params)
 
 		# Get song upload from webpage

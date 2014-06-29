@@ -23,11 +23,25 @@ class UserManager:
 		self.network_manager.init_network()
 
 	def create_user(self, create_email, create_mac_address, create_first_name, create_last_name='', create_username=None, create_password=None, create_password_confirm=None, create_delay=config.time_default_delay_to_play_song, create_song_id=None):
-		# TODO: Perform checks
-
-		# get dynamic defaults
+		# Use first name as username if not provided
 		if not create_username:
 			create_username = create_first_name
+
+		# Perform checks
+		if User.objects.filter(email=create_email).count() > 0:
+			raise UserWarning("The email {email} has already been registered by another user.".format(email=create_email))
+		if UserProfile.objects.filter(mac_address=create_mac_address).count() > 0:
+			raise UserWarning("The mac address {mac address} has already been registered by another user.".format(mac_address=create_mac_address))
+		if User.objects.filter(username=create_username).count() > 0:
+			raise UserWarning("The username {username} has already been registered by another user. You must register with a different username.".format(username=create_username))
+		if (create_password or create_password_confirm) and (not create_password or not create_password_confirm):
+			raise UserWarning("Both the password and password confirm fields must be filled in to set a password for your account.")
+		if create_password and len(create_password) < config.user_password_min_length:
+			raise UserWarning("Passwords must be at least {password_min_length} characters long.".format(password_min_length=config.user_password_min_length))
+		if create_password and create_password != create_password_confirm:
+			raise UserWarning("Password and password confirm fields do not match.")
+
+		# Use mac address as password if not provided
 		if not create_password:
 			create_password = create_mac_address
 
@@ -48,18 +62,18 @@ class UserManager:
 
 	def update_user(self, user, email=None, username=None, password=None, password_confirm=None, first_name=None, last_name=None, mac_address=None, song_id=None, song_upload=None, delay=None):
 		# Perform checks
-		if email and email != user.user.email and len(User.objects.filter(email=email)) > 0:
-			raise AssertionError("The email {email} has already been registered by another user.".format(email=email))
-		if username and username != user.user.username and len(User.objects.filter(username=username)) > 0:
-	 		raise AssertionError("The username {username} has already been registered by another user.".format(username=username))
+		if email and email != user.user.email and User.objects.filter(email=email).count() > 0:
+			raise UserWarning("The email {email} has already been registered by another user.".format(email=email))
+		if username and username != user.user.username and User.objects.filter(username=username).count() > 0:
+	 		raise UserWarning("The username {username} has already been registered by another user.".format(username=username))
 		if (password or password_confirm) and (not password or not password_confirm):
-			raise AssertionError("Both the password and password confirm fields must be filled in to update your password.")
+			raise UserWarning("Both the password and password confirm fields must be filled in to update your password.")
 		if password and len(password) < config.user_password_min_length:
-			raise AssertionError("Password must be at least {password_min_length} characters long.".format(password_min_length=config.user_password_min_length))
+			raise UserWarning("Password must be at least {password_min_length} characters long.".format(password_min_length=config.user_password_min_length))
 		if password and password != password_confirm:
-			raise AssertionError("Password and password confirm fields do not match.")
-		if mac_address and mac_address != user.mac_address and len(UserProfile.objects.filter(mac_address=mac_address)) > 0:
-			raise AssertionError("The mac address {mac_address} has already been registered by another user.".format(mac_address=mac_address))
+			raise UserWarning("Password and password confirm fields do not match.")
+		if mac_address and mac_address != user.mac_address and UserProfile.objects.filter(mac_address=mac_address).count() > 0:
+			raise UserWarning("The mac address {mac_address} has already been registered by another user.".format(mac_address=mac_address))
 
 		# Update user
 		if email:
@@ -95,7 +109,7 @@ class UserManager:
 		try:
 			userprofile = UserProfile.objects.get(mac_address=address)
 			if userprofile.has_not_played_today():
-				log(message="Detected activity from {name}.".format(name=userprofile.user.first_name))
+				log(message="Detected activity from {user}.".format(user=userprofile.user))
 				userprofile.most_recent_activity = datetime.datetime.now()
 				userprofile.save()
 				self.song_manager.queue_song(user=userprofile.user)

@@ -1,11 +1,12 @@
+import os
 import datetime
-from os import listdir
 import random
 import threading
 
 from django.contrib import admin
 from pygame import mixer
 
+from hummingbird.settings import SOUND_DIR
 import config
 from utils import log
 from songs.models import *
@@ -34,8 +35,9 @@ class SongManager:
 		threading.Timer(interval=time_wait_to_play, function=self.play_song_on_queue).start()
 
 	def play_sound(self, sound_name):
-		soundDir = config.audio_dir + config.sound_subdir
-		mixer.Sound(soundDir+sound_name).play()
+		mixer.Sound(
+			os.path.join(SOUND_DIR, sound_name)
+		).play()
 
 	def queue_song(self, user):
 		if self.ready_to_queue:
@@ -100,8 +102,4 @@ class SongManager:
 		if len(random_list) == 0:
 			raise AssertionError("A random song could not be assigned because there are no random songs in the system.")
 		self.assign_walkin_song(user=user, song=random.choice(random_list))
-
-	def add_uploaded_song_and_assign(self, user, title, audiofile, artist="n/a", album="n/a", random=False, walkin_length=config.time_default_max_song_length):
-		song = self.add_uploaded_song(title=title, audiofile=audiofile, artist=artist, album=album, random=random)
-		self.assign_walkin_song(user=user, song=song, walkin_length=walkin_length)
 	

@@ -1,21 +1,13 @@
 """
 Django settings for hummingbird project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.6/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.6/ref/settings/
 """
+import os
 
 import config
-import hummingbird.settings_environment as senv
 import hummingbird.settings_secret as secret
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+TOP_DIR = os.path.dirname(BASE_DIR)
 SECRET_KEY = secret.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -71,14 +63,19 @@ USE_TZ = False
 
 # Templates and static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (senv.STATIC_DIR,)
-TEMPLATE_DIRS = (senv.TEMPLATE_DIR,)
+STATICFILES_DIRS = (
+    os.path.join(TOP_DIR, 'static'),
+)
+TEMPLATE_DIRS = (
+    os.path.join(TOP_DIR, 'templates'),
+)
 
 # Contact
-FEEDBACK_EMAIL = senv.FEEDBACK_EMAIL
+FEEDBACK_EMAIL = secret.FEEDBACK_EMAIL
 
 # Audiofield
-MEDIA_ROOT = BASE_DIR + '/' + config.audio_dir
+MEDIA_ROOT = os.path.join(TOP_DIR, 'audio')
+SOUND_DIR = os.path.join(MEDIA_ROOT, 'sound')
 CHANNEL_TYPE_VALUE = 0 # 0-Keep original, 1-Mono, 2-Stereo
 FREQ_TYPE_VALUE = 8000 # 0-Keep original, 8000-8000Hz, 16000-16000Hz, 22050-22050Hz, 44100-44100Hz, 48000-48000Hz, 96000-96000Hz
 CONVERT_TYPE_VALUE = 0 # 0-Keep original, 1-Convert to MP3, 2-Convert to WAV, 3-Convert to OGG

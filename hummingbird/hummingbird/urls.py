@@ -14,6 +14,5 @@ urlpatterns = patterns('',
     url(r'^activity/', uv.activity, name='activity'),
     url(r'^profile/', uv.profile, name='profile'),
     url(r'^logout/', uv.logout, name='logout'),
-    url(r'^songs/', include('songs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )

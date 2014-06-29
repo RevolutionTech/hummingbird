@@ -15,8 +15,6 @@ time_default_max_song_length = 20
 time_fadeout_song = 3000 # in milliseconds
 
 # User Files
-audio_dir = "audio/"
-sound_subdir = "sound/"
 tcpdump_did_not_match_log = "tcpdump_dnm.log"
 
 # Log Settings
