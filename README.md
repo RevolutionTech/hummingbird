@@ -58,21 +58,21 @@ Next we will need to create a file in the same directory as `settings.py` called
 
 Of course you should [generate your own secret key](http://stackoverflow.com/a/16630719) and use a more secure password for your database.
 
+Additional configuration is available by modifying the `config.py` file.
+
 With everything installed and all files in place, you may now create the database tables. You can do this with:
 
 `python manage.py syncdb`
 
 `python manage.py migrate`
 
+## Running
+
 The server can be run on port 8000 with `python manage.py runserver 0.0.0.0:8000`. Then the server can be reached from the browser at `http://0.0.0.0:8000/`.
 
 Hitting that URL should reach the user interface where users can create accounts, upload new songs, and modify their profile information.
 
-Additional configuration is available by modifying the `config.py` file.
-
-## Running
-
-Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `/init_hummingbird`. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running. Watch out for Chrome pre-fetching, it may hit the URL before you actually request the page!
+Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `http://0.0.0.0:8000/init_hummingbird`. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running. Watch out for Chrome pre-fetching, it may hit the URL before you actually request the page!
 
 The server will then make a `sudo` call to `tcpdump`, so the server will then be hanging waiting for you to type in the password for sudo in the terminal window that you ran `runserver` in.
 
