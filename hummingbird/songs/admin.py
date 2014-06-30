@@ -72,8 +72,11 @@ class SongManager:
 				threading.Timer(song_to_play_assignment.walkin_length, self.stop_long_song, [user_to_play]).start()
 				# play the song
 				log(message="Playing {song}.".format(song=song_to_play_assignment))
-				mixer.music.load(song_to_play_song.audiofile.file)
-				mixer.music.play()
+				try:
+					mixer.music.load(song_to_play_song.audiofile.file)
+					mixer.music.play()
+				except:
+					log(message="Hummingbird failed to play {song}.".format(song=song_to_play_assignment))
 			else:
 				self.user_song_currently_playing = None
 
