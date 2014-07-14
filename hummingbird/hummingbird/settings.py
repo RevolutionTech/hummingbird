@@ -24,7 +24,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
-    'audiofield',
     'users',
     'songs',
     'network',
@@ -36,7 +35,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'audiofield.middleware.threadlocals.ThreadLocals',
 )
 ROOT_URLCONF = 'hummingbird.urls'
 WSGI_APPLICATION = 'hummingbird.wsgi.application'
@@ -73,9 +71,6 @@ TEMPLATE_DIRS = (
 # Contact
 FEEDBACK_EMAIL = secret.FEEDBACK_EMAIL
 
-# Audiofield
+# Song files
 MEDIA_ROOT = os.path.join(TOP_DIR, 'audio')
 SOUND_DIR = os.path.join(MEDIA_ROOT, 'sound')
-CHANNEL_TYPE_VALUE = 0 # 0-Keep original, 1-Mono, 2-Stereo
-FREQ_TYPE_VALUE = 8000 # 0-Keep original, 8000-8000Hz, 16000-16000Hz, 22050-22050Hz, 44100-44100Hz, 48000-48000Hz, 96000-96000Hz
-CONVERT_TYPE_VALUE = 0 # 0-Keep original, 1-Convert to MP3, 2-Convert to WAV, 3-Convert to OGG

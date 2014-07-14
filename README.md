@@ -37,7 +37,7 @@ In the future you can reactivate the virtual environment with:
 
 ## Installation
 
-Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), MySQL-python, [django](https://www.djangoproject.com/), [south](http://south.readthedocs.org/en/latest/installation.html), and django-audiofield:
+Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), MySQL-python, [django](https://www.djangoproject.com/), and [south](http://south.readthedocs.org/en/latest/installation.html):
 
 `sudo apt-get -y install libsox-fmt-mp3 libsox-fmt-all mpg321 dir2ogg libav-tools`
 
@@ -45,7 +45,7 @@ Then in your virtual environment, you will need to install [pygame](http://www.p
 
 `yes y | pip install git+http://github.com/xamox/pygame`
 
-`pip install MySQL-python django south django-audiofield`
+`pip install MySQL-python django south`
 
 ## Configuration
 
