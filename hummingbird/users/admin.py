@@ -23,6 +23,9 @@ class UserManager:
 		self.network_manager.init_network()
 
 	def create_user(self, create_email, create_mac_address, create_first_name, create_last_name='', create_username=None, create_password=None, create_password_confirm=None, create_delay=config.time_default_delay_to_play_song, create_song_id=None):
+		# Put mac address in lowercase
+		create_mac_address = create_mac_address.lower()
+
 		# Use first name as username if not provided
 		if not create_username:
 			create_username = create_first_name
@@ -61,6 +64,10 @@ class UserManager:
 		return up
 
 	def update_user(self, user, email=None, username=None, password=None, password_confirm=None, first_name=None, last_name=None, mac_address=None, song_id=None, song_upload=None, delay=None):
+		# Put mac address in lowercase
+		if mac_address:
+			mac_address = mac_address.lower()
+		
 		# Perform checks
 		if email and email != user.user.email and User.objects.filter(email=email).count() > 0:
 			raise UserWarning("The email {email} has already been registered by another user.".format(email=email))
