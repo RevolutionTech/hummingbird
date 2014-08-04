@@ -72,9 +72,16 @@ The server can be run on port 8000 with `python manage.py runserver 0.0.0.0:8000
 
 Hitting that URL should reach the user interface where users can create accounts, upload new songs, and modify their profile information.
 
-Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by hitting the URL: `http://0.0.0.0:8000/init_hummingbird`. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running. Watch out for Chrome pre-fetching, it may hit the URL before you actually request the page!
+Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by running the `init_hummingbird()` function from the shell:
 
-The server will then make a `sudo` call to `tcpdump`, so the server will then be hanging waiting for you to type in the password for sudo in the terminal window that you ran `runserver` in.
+    python manage.py shell
+    from users.admin import UserManager
+    um = UserManager()
+    um.init_hummingbird()
+
+This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running.
+
+The server will then make a `sudo` call to `tcpdump`, so you will need to type in the password for sudo.
 
 Note that while Hummingbird is running, the network interface may be unable to connect to the router. This could mean that *you will not be able to connect to the Internet*. Once you are done using Hummingbird, you may have to turn your Wifi off and back on again to resume normal operation.
 
