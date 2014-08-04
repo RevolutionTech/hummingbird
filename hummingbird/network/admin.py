@@ -1,8 +1,6 @@
 import re
 import subprocess
 
-from django.contrib import admin
-
 import config
 
 class NetworkManager:

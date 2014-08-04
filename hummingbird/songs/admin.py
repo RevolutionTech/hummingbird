@@ -3,10 +3,10 @@ import datetime
 import random
 import threading
 
+from django.conf import settings
 from django.contrib import admin
 from pygame import mixer
 
-from hummingbird.settings import SOUND_DIR
 import config
 from utils import log
 from songs.models import *
@@ -36,7 +36,7 @@ class SongManager:
 
 	def play_sound(self, sound_name):
 		mixer.Sound(
-			os.path.join(SOUND_DIR, sound_name)
+			os.path.join(settings.SOUND_DIR, sound_name)
 		).play()
 
 	def queue_song(self, user):
