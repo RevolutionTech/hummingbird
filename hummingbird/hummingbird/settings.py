@@ -60,7 +60,7 @@ USE_L10N = True
 USE_TZ = False
 
 # Templates and static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+STATIC_ROOT = STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(TOP_DIR, 'static'),
 )
