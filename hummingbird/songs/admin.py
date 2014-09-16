@@ -15,7 +15,7 @@ class SongManager:
 	'''
 	Music Player
 	'''
-	def init_mixer(self):
+	def init_mixer(self, wait_to_play):
 		mixer.init()
 		self.play_sound(sound_name="hatching.wav")
 		self.ready_to_queue = False
@@ -28,7 +28,7 @@ class SongManager:
 				song.save()
 
 		# wait before queuing any songs
-		if config.wait_to_play:
+		if wait_to_play:
 			time_wait_to_play = config.time_wait_to_play
 		else:
 			time_wait_to_play = 0

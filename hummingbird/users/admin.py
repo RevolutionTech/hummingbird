@@ -14,12 +14,12 @@ class UserManager:
 		self.song_manager = SongManager()
 		self.network_manager = NetworkManager(user_manager=self)
 
-	def init_hummingbird(self):
-		if config.all_users_no_activity_today:
+	def init_hummingbird(self, wait_to_play=config.wait_to_play, no_activity_today=config.all_users_no_activity_today):
+		if no_activity_today:
 			for user in UserProfile.objects.all():
 				user.most_recent_activity = datetime.datetime.now() - datetime.timedelta(days=2)
 				user.save()
-		self.song_manager.init_mixer()
+		self.song_manager.init_mixer(wait_to_play)
 		self.network_manager.init_network()
 
 	def create_user(self, create_email, create_mac_address, create_first_name, create_last_name='', create_username=None, create_password=None, create_password_confirm=None, create_delay=config.time_default_delay_to_play_song, create_song_id=None):
