@@ -18,6 +18,8 @@ class NetworkManager:
 		popen = subprocess.Popen("./tcpdump", stdout=subprocess.PIPE)
 		for line in iter(popen.stdout.readline, ""):
 			# handle input as network traffic from tcpdump
+			if config.tcpdump_to_stdout:
+				print line
 			addresses = self.get_MAC(line=line)
 			for address in addresses:
 				self.user_manager.MAC_detected(address=address)
