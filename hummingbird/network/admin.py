@@ -1,13 +1,18 @@
 import re
 import subprocess
 
-from django.contrib import admin
-
 import config
 
 class NetworkManager:
 	def __init__(self, user_manager):
 		self.user_manager = user_manager
+		self.tcpdump_re_ignore = map(re.compile, config.tcpdump_re_ignore)
+		self.tcpdump_re = dict(
+			map(
+				lambda (k, v): (k, (re.compile(v[0]), v[1])),
+				config.tcpdump_re.iteritems()
+			)
+		)
 
 	def init_network(self):
 		popen = subprocess.Popen("./tcpdump", stdout=subprocess.PIPE)
@@ -19,12 +24,12 @@ class NetworkManager:
 
 	def get_MAC(self, line):
 		# check if line should be ignored
-		for regex in config.tcpdump_re_ignore:
+		for regex in self.tcpdump_re_ignore:
 			if re.match(regex, line):
 				return []
 
 		# check for MAC addresses
-		for val in config.tcpdump_re.itervalues():
+		for val in self.tcpdump_re.itervalues():
 			regex, groups = val
 			regex_match = re.match(regex, line)
 			if regex_match:

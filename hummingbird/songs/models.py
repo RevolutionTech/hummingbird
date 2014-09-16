@@ -1,15 +1,10 @@
 from django.db import models
-from audiofield.fields import AudioField
 
 import config
 
 class Song(models.Model):
 	title = models.CharField(max_length=config.song_title_max_length)
-	audiofile = AudioField(
-		upload_to='./',
-		ext_whitelist=(".mp3", ".wav", ".ogg"),
-		help_text=("Allowed type - .mp3, .wav, .ogg")
-	)
+	audiofile = models.FileField(upload_to='./')
 	artist = models.CharField(max_length=config.song_artist_max_length, default="n/a")
 	album = models.CharField(max_length=config.song_album_max_length, default="n/a")
 	random = models.BooleanField(default=False, db_index=True)

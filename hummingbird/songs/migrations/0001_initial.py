@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.create_table(u'songs_song', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=35)),
-            ('audiofile', self.gf('audiofield.fields.AudioField')(ext_whitelist=['.mp3', '.wav', '.ogg'], max_length=100)),
+            ('audiofile', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
             ('artist', self.gf('django.db.models.fields.CharField')(default='n/a', max_length=20)),
             ('album', self.gf('django.db.models.fields.CharField')(default='n/a', max_length=20)),
             ('random', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True)),
@@ -90,7 +90,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Song'},
             'album': ('django.db.models.fields.CharField', [], {'default': "'n/a'", 'max_length': '20'}),
             'artist': ('django.db.models.fields.CharField', [], {'default': "'n/a'", 'max_length': '20'}),
-            'audiofile': ('audiofield.fields.AudioField', [], {'ext_whitelist': "['.mp3', '.wav', '.ogg']", 'max_length': '100'}),
+            'audiofile': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'random': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '35'})

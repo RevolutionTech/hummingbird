@@ -7,7 +7,7 @@ sudo echo "Go Hummingbird!" >&2
 # Determine the network interface
 INTERFACE=$(echo $INTERFACE)
 if [[ -z "${INTERFACE}" ]]; then
-	if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+	if [[ "${OSTYPE}" == "linux-gnu" ]] || [[ "${OSTYPE}" == "linux-gnueabihf"  ]]; then
 		INTERFACE=$(ip route get 8.8.8.8 | awk '{ print $(NF-2); exit }')
 	elif [[ "${OSTYPE}" == "darwin"* ]]; then
 		INTERFACE=$(route get 8.8.8.8 | grep interface | awk '{ print $NF; exit }')

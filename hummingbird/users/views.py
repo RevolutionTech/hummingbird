@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.template import Template, RequestContext
@@ -6,7 +7,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import View
 
-from hummingbird.settings import FEEDBACK_EMAIL as feedback_email
 import config
 from utils import create_kwargs
 from users.admin import UserManager
@@ -18,11 +18,7 @@ class UserView(View):
 	def __init__(self):
 		self.um = UserManager()
 
-	def init_hummingbird(self, request):
-		self.um.init_hummingbird()
-		return HttpResponseRedirect('/')
-
-	def get_songs(self):
+	def _get_songs(self):
 		return [{
 			'id': song.id,
 			'title': song.title,
@@ -82,9 +78,9 @@ class UserView(View):
 
 		# If all else fails, present the login screen
 		html = get_template('login.html').render(RequestContext(request, {
-			'songs': self.get_songs(),
+			'songs': self._get_songs(),
 			'delay': config.time_default_delay_to_play_song,
-			'feedback_email': feedback_email,
+			'feedback_email': settings.FEEDBACK_EMAIL,
 		}))
 		return HttpResponse(html)
 
@@ -108,7 +104,7 @@ class UserView(View):
 		
 		html = get_template('activity.html').render(RequestContext(request, {
 			'log_messages': messages,
-			'feedback_email': feedback_email,
+			'feedback_email': settings.FEEDBACK_EMAIL,
 		}))
 		return HttpResponse(html)
 
@@ -149,9 +145,9 @@ class UserView(View):
 			'email': up.user.email,
 			'MAC': up.mac_address,
 			'username': up.user.username,
-			'songs': self.get_songs(),
+			'songs': self._get_songs(),
 			'walkin_song': up.walkin_song.song.id,
 			'delay': up.delay,
-			'feedback_email': feedback_email,
+			'feedback_email': settings.FEEDBACK_EMAIL,
 		}))
 		return HttpResponse(html)
