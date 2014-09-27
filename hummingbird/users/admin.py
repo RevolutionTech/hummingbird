@@ -3,7 +3,7 @@ import datetime
 from django.contrib import admin
 
 import config
-from utils import log, log_MAC_address
+from utils import Log
 from users.models import *
 from songs.models import Song, SongAssignment
 from network.admin import NetworkManager
@@ -111,12 +111,11 @@ class UserManager:
 		return user
 
 	def MAC_detected(self, address):
-		if config.log_mac_addresses:
-			log_MAC_address(address=address)
+		Log.log_MAC_address(address=address)
 		try:
 			userprofile = UserProfile.objects.get(mac_address=address)
 			if userprofile.has_not_played_today():
-				log(message="Detected activity from {user}.".format(user=userprofile.user))
+				Log.log(message="Detected activity from {user}.".format(user=userprofile.user))
 				userprofile.most_recent_activity = datetime.datetime.now()
 				userprofile.save()
 				self.song_manager.queue_song(user=userprofile.user)

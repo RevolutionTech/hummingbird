@@ -3,15 +3,33 @@ import datetime
 from users.models import UserProfile
 from network.models import ActivityLog
 
-def log(message, MAC=False):
-	ActivityLog.objects.create(message=message, mac=MAC)
+class Log:
 
-def log_MAC_address(address):
-	try:
-		userprofile = UserProfile.objects.get(mac_address=address)
-		log(message="MAC detected: {address}; owned by {name}".format(address=address, name=userprofile.user.username), MAC=True)
-	except UserProfile.DoesNotExist:
-		log(message="MAC detected: {address}".format(address=address), MAC=True)
+	STDOUT = 0
+	DB = 1
+	FILE = 2
+
+	@classmethod
+	def log(cls, message, location=DB):
+		if location == cls.DB:
+			ActivityLog.objects.create(message=message)
+
+	@classmethod
+	def log_MAC_address(cls, address):
+		try:
+			userprofile = UserProfile.objects.get(mac_address=address)
+			log(
+				message="MAC detected: {address}; owned by {name}".format(
+					address=address,
+					name=userprofile.user.username
+				),
+				location=cls.STDOUT
+			)
+		except UserProfile.DoesNotExist:
+			log(
+				message="MAC detected: {address}".format(address=address),
+				location=cls.STDOUT
+			)
 
 def create_kwargs(request, params):
 		kwargs = {}
