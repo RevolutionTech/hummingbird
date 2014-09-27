@@ -16,6 +16,7 @@ class SongManager:
 	Music Player
 	'''
 	def init_mixer(self, wait_to_play):
+		Log.log(message="Initiating Music Player...", locations=[Log.STDOUT,])
 		mixer.init()
 		self.play_sound(sound_name="hatching.wav")
 		self.ready_to_queue = False
@@ -23,6 +24,7 @@ class SongManager:
 
 		# clear queue by setting its played time to earlier than the queue time
 		if config.clear_queue:
+			Log.log(message="Clearing queue...", locations=[Log.STDOUT,])
 			for song in SongQueue.objects.filter(played__isnull=True):
 				song.played = song.added - datetime.timedelta(seconds=1)
 				song.save()
@@ -35,6 +37,10 @@ class SongManager:
 		threading.Timer(interval=time_wait_to_play, function=self.play_song_on_queue).start()
 
 	def play_sound(self, sound_name):
+		Log.log(
+			message="Playing sound {sound}.".format(sound=sound_name),
+			locations=[Log.STDOUT,]
+		)
 		mixer.Sound(
 			os.path.join(settings.SOUND_DIR, sound_name)
 		).play()
@@ -46,10 +52,15 @@ class SongManager:
 					delay=user.userprofile.delay,
 					user=user
 				),
-				locations=[Log.STDOUT, Log.DB,]
+				locations=[Log.STDOUT,]
 			)
 			self.play_sound(sound_name="activity.wav")
 			threading.Timer(user.userprofile.delay, self.queue_song_after_delay, [user.userprofile.walkin_song]).start()
+		else:
+			Log.log(
+				message="Not queueing {user}'s song.".format(user=user),
+				locations=[Log.STDOUT,]
+			)
 
 	def queue_song_after_delay(self, song):
 		SongQueue.objects.create(song=song)
@@ -90,6 +101,10 @@ class SongManager:
 
 	def stop_long_song(self, user):
 		if self.user_song_currently_playing == user:
+			Log.log(
+				message="Stopping {user}'s song.".format(user=user),
+				locations=[Log.STDOUT,]
+			)
 			mixer.music.fadeout(config.time_fadeout_song)
 
 	'''

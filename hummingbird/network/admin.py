@@ -2,6 +2,7 @@ import re
 import subprocess
 
 import config
+from utils import Log
 
 class NetworkManager:
 	def __init__(self, user_manager):
@@ -15,6 +16,7 @@ class NetworkManager:
 		)
 
 	def init_network(self):
+		Log.log(message="Initiating Network Manager...", locations=[Log.STDOUT,])
 		popen = subprocess.Popen("./tcpdump", stdout=subprocess.PIPE)
 		for line in iter(popen.stdout.readline, ""):
 			# handle input as network traffic from tcpdump

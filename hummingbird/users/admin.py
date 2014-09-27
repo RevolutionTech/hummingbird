@@ -15,7 +15,9 @@ class UserManager:
 		self.network_manager = NetworkManager(user_manager=self)
 
 	def init_hummingbird(self, wait_to_play=config.wait_to_play, no_activity_today=config.all_users_no_activity_today):
+		Log.log(message="Initiating Hummingbird...", locations=[Log.STDOUT,])
 		if no_activity_today:
+			Log.log(message="Resetting all users' activity today...", locations=[Log.STDOUT,])
 			for user in UserProfile.objects.all():
 				user.most_recent_activity = datetime.datetime.now() - datetime.timedelta(days=2)
 				user.save()
