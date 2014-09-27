@@ -41,18 +41,24 @@ class SongManager:
 
 	def queue_song(self, user):
 		if self.ready_to_queue:
-			Log.log(message="Waiting delay of {delay} seconds to queue {user}'s song.".format(delay=user.userprofile.delay, user=user))
+			Log.log(
+				message="Waiting delay of {delay} seconds to queue {user}'s song.".format(
+					delay=user.userprofile.delay,
+					user=user
+				),
+				locations=[Log.STDOUT, Log.DB,]
+			)
 			self.play_sound(sound_name="activity.wav")
 			threading.Timer(user.userprofile.delay, self.queue_song_after_delay, [user.userprofile.walkin_song]).start()
 
 	def queue_song_after_delay(self, song):
 		SongQueue.objects.create(song=song)
-		Log.log(message="Queued {song}.".format(song=song.song))
+		Log.log(message="Queued {song}.".format(song=song.song), locations=[Log.STDOUT, Log.DB,])
 
 	def play_song_on_queue(self):
 		if not self.ready_to_queue:
 			self.ready_to_queue = True
-			Log.log(message="System now ready to play walk-in songs.")
+			Log.log(message="System now ready to play walk-in songs.", locations=[Log.STDOUT, Log.DB,])
 			mixer.stop()
 			self.play_sound(sound_name="ready.wav")
 
@@ -71,12 +77,12 @@ class SongManager:
 				# set a timer for long songs
 				threading.Timer(song_to_play_assignment.walkin_length, self.stop_long_song, [user_to_play]).start()
 				# play the song
-				Log.log(message="Playing {song}.".format(song=song_to_play_assignment))
+				Log.log(message="Playing {song}.".format(song=song_to_play_assignment), locations=[Log.STDOUT, Log.DB,])
 				try:
 					mixer.music.load(song_to_play_song.audiofile.file)
 					mixer.music.play()
 				except:
-					Log.log(message="Hummingbird failed to play {song}.".format(song=song_to_play_assignment))
+					Log.log(message="Hummingbird failed to play {song}.".format(song=song_to_play_assignment), locations=[Log.STDOUT,])
 			else:
 				self.user_song_currently_playing = None
 

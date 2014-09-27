@@ -1,5 +1,6 @@
 import datetime
 
+import config
 from users.models import UserProfile
 from network.models import ActivityLog
 
@@ -10,25 +11,28 @@ class Log:
 	FILE = 2
 
 	@classmethod
-	def log(cls, message, location=DB):
-		if location == cls.DB:
-			ActivityLog.objects.create(message=message)
+	def log(cls, message, locations=[DB,]):
+		for location in locations:
+			if location == cls.STDOUT and config.verbose_logging_to_stdout:
+				print message
+			elif location == cls.DB:
+				ActivityLog.objects.create(message=message)
 
 	@classmethod
 	def log_MAC_address(cls, address):
 		try:
 			userprofile = UserProfile.objects.get(mac_address=address)
-			log(
+			cls.log(
 				message="MAC detected: {address}; owned by {name}".format(
 					address=address,
 					name=userprofile.user.username
 				),
-				location=cls.STDOUT
+				locations=[cls.STDOUT,]
 			)
 		except UserProfile.DoesNotExist:
-			log(
+			cls.log(
 				message="MAC detected: {address}".format(address=address),
-				location=cls.STDOUT
+				locations=[cls.STDOUT,]
 			)
 
 def create_kwargs(request, params):
