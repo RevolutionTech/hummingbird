@@ -19,7 +19,7 @@ tcpdump_did_not_match_log = "tcpdump_dnm.log"
 
 # Log Settings
 activity_events_per_page = 15
-tcpdump_to_stdout = False
+tcpdump_to_stdout = True
 verbose_logging_to_stdout = True
 
 # Data Settings

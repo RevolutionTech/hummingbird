@@ -18,5 +18,8 @@ if [[ -z "${INTERFACE}" ]]; then
 	export INTERFACE
 fi
 
+# Determine the local IP address
+IP=$(ifconfig ${INTERFACE} | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}')
+
 # Send tcpdump output to stdout (redirected to Hummingbird)
-sudo tcpdump -I -e -i ${INTERFACE} 2>> tcpdump_error.log
+sudo tcpdump -I -el -i ${INTERFACE} not host ${IP} 2>> tcpdump_error.log
