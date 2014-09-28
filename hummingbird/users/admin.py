@@ -118,6 +118,4 @@ class UserManager:
 		userprofile = UserProfile.objects.get_if_has_not_played_today(mac_address=address)
 		if userprofile:
 			Log.log(message="Detected activity from {user}.".format(user=userprofile.user), locations=[Log.STDOUT, Log.DB,])
-			userprofile.most_recent_activity = datetime.datetime.now()
-			userprofile.save()
 			self.song_manager.queue_song(user=userprofile.user)

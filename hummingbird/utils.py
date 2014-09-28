@@ -1,7 +1,6 @@
 import datetime
 
 import config
-from users.models import UserProfile
 from network.models import ActivityLog
 
 class Log:
@@ -20,20 +19,10 @@ class Log:
 
 	@classmethod
 	def log_MAC_address(cls, address):
-		try:
-			userprofile = UserProfile.objects.get(mac_address=address)
-			cls.log(
-				message="MAC detected: {address}; owned by {name}".format(
-					address=address,
-					name=userprofile.user.username
-				),
-				locations=[cls.STDOUT,]
-			)
-		except UserProfile.DoesNotExist:
-			cls.log(
-				message="MAC detected: {address}".format(address=address),
-				locations=[cls.STDOUT,]
-			)
+		cls.log(
+			message="MAC detected: {address}".format(address=address),
+			locations=[cls.STDOUT,]
+		)
 
 def create_kwargs(request, params):
 		kwargs = {}
@@ -50,3 +39,14 @@ def create_kwargs(request, params):
 			elif not optional:
 				raise AssertionError("Expected parameter {param}".format(param=name))
 		return kwargs
+
+def has_not_played_today(dt):
+	# not played today if:
+	# 	1) it's now after reset point and last played earlier today before reset point or earlier
+	# 	2) it's now before reset point and last played earlier yesterday before reset point or earlier
+	now = datetime.datetime.now()
+	today = datetime.datetime.combine(now.date(), config.time_reset_time)
+	yesterday = today - datetime.timedelta(days=1)
+
+	return (now.time() >= config.time_reset_time and dt < today) or \
+		(now.time() < config.time_reset_time and dt < yesterday)
