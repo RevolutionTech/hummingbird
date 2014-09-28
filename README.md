@@ -87,4 +87,4 @@ Note that while Hummingbird is running, the network interface may be unable to c
 
 ## Improve Hummingbird
 
-Any other bugs to report, suggestions for improvement, feature requests, government secrets, etc. please feel free to send my way. Contributions to the repo are especially welcome!
+Any bugs to report, suggestions for improvement, feature requests, etc. please feel free to send my way. Contributions to the repo are especially welcome!
