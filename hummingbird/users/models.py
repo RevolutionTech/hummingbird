@@ -5,12 +5,22 @@ from django.contrib.auth.models import User
 
 import config
 
+class UserProfileManager(models.Manager):
+	def get_if_has_not_played_today(self, mac_address):
+		users_with_mac = self.filter(mac_address=mac_address)
+		if users_with_mac:
+			user_with_mac = users_with_mac[0]
+			if user_with_mac.has_not_played_today():
+				return user_with_mac
+
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	mac_address = models.CharField(max_length=17, unique=True, db_index=True)
 	walkin_song = models.ForeignKey('songs.SongAssignment', null=True, blank=True)
 	delay = models.IntegerField(default=config.time_default_delay_to_play_song, blank=True)
 	most_recent_activity = models.DateTimeField(auto_now_add=True, blank=True)
+
+	objects = UserProfileManager()
 
 	def __unicode__(self):
 		return "{user}: {song} ({song_length}s)".format(user=self.user, song=self.walkin_song.song, song_length=self.walkin_song.walkin_length)

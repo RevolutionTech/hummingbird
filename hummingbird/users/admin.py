@@ -114,12 +114,10 @@ class UserManager:
 
 	def MAC_detected(self, address):
 		Log.log_MAC_address(address=address)
-		try:
-			userprofile = UserProfile.objects.get(mac_address=address)
-			if userprofile.has_not_played_today():
-				Log.log(message="Detected activity from {user}.".format(user=userprofile.user), locations=[Log.STDOUT, Log.DB,])
-				userprofile.most_recent_activity = datetime.datetime.now()
-				userprofile.save()
-				self.song_manager.queue_song(user=userprofile.user)
-		except UserProfile.DoesNotExist:
-			pass
+		
+		userprofile = UserProfile.objects.get_if_has_not_played_today(mac_address=address)
+		if userprofile:
+			Log.log(message="Detected activity from {user}.".format(user=userprofile.user), locations=[Log.STDOUT, Log.DB,])
+			userprofile.most_recent_activity = datetime.datetime.now()
+			userprofile.save()
+			self.song_manager.queue_song(user=userprofile.user)

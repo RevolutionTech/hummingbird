@@ -22,4 +22,6 @@ fi
 IP=$(ifconfig ${INTERFACE} | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}')
 
 # Send tcpdump output to stdout (redirected to Hummingbird)
+# Ignore packets from the local IP address
+# Before sending the packet header, pipe the output to sed to get just the src MAC address
 sudo tcpdump -I -elt -i ${INTERFACE} not host ${IP} 2>> tcpdump_error.log | sed 's/ .*//'
