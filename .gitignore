@@ -5,7 +5,7 @@
 # User-specific #
 #################
 *.mp3
-tcpdump_error.log
+ignored_hosts
 
 # OS generated files #
 ######################

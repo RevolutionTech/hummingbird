@@ -1,5 +1,4 @@
-import re
-import subprocess
+import pyshark
 
 import config
 from utils import Log
@@ -7,22 +6,17 @@ from utils import Log
 class NetworkManager:
 	def __init__(self, user_manager):
 		self.user_manager = user_manager
-		self.mac_address_re = re.compile(config.mac_address_re)
+
+	@staticmethod
+	def ignored_hosts_lst_to_str(lst):
+		return ' and '.join(map(lambda x: 'not ether host {}'.format(x), lst))
 
 	def init_network(self):
 		Log.log(message="Initiating Network Manager...", locations=[Log.STDOUT,])
-		popen = subprocess.Popen("./tcpdump", stdout=subprocess.PIPE)
-		for line in iter(popen.stdout.readline, ""):
-			line = line.replace('\n', '')
-			# handle input as network traffic from tcpdump
-			if config.tcpdump_to_stdout:
-				print line
-			address = self.get_MAC(line=line)
-			if address:
-				self.user_manager.MAC_detected(address=address)
-
-	def get_MAC(self, line):
-		# check for MAC address
-		if re.match(self.mac_address_re, line) and \
-			line[:8] != "01:00:5e" and line[:5] != "33:33":
-			return line
+		bpf_filter = self.ignored_hosts_lst_to_str(config.ignored_hosts)
+		capture = pyshark.LiveCapture(interface='any', bpf_filter=bpf_filter)
+		for packet in capture.sniff_continuously():
+			if config.network_dump_to_stdout:
+				Log.log(mesage=packet, locations=[Log.STDOUT,])
+			address = packet.sll.src_eth
+			self.user_manager.MAC_detected(address=address)
