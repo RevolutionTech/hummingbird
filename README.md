@@ -44,9 +44,9 @@ In the future you can reactivate the virtual environment with:
 
 ### Installation
 
-Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), [pyshark](http://kiminewt.github.io/pyshark/), MySQL-python, [django](https://www.djangoproject.com/), and [south](http://south.readthedocs.org/en/latest/installation.html):
+Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), MySQL-python, [django](https://www.djangoproject.com/), and [south](http://south.readthedocs.org/en/latest/installation.html):
 
-    sudo apt-get -y install libsox-fmt-mp3 libsox-fmt-all mpg321 dir2ogg libav-tools libxml2-dev libxslt1-dev
+    sudo apt-get -y install libsox-fmt-mp3 libsox-fmt-all mpg321 dir2ogg libav-tools
     sudo apt-get -y build-dep python-pygame
     yes y | pip install -r requirements.txt
 

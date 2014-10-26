@@ -26,6 +26,6 @@ song_artist_max_length = 20
 song_album_max_length = 20
 
 # Network
-ignored_hosts = ['01:00:5e', '33:33']
+network_interface = 'wlan0'
 with open('ignored_hosts') as f:
-	ignored_hosts += filter(lambda x: x, map(lambda x: x.strip('\n'), f.readlines()))
+	ignored_hosts = filter(lambda x: x, map(lambda x: x.strip('\n'), f.readlines()))
