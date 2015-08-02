@@ -1,7 +1,7 @@
 # Hummingbird: Walk-in songs
 # Created by: Lucas Connors
 
-![Hummingbird](http://revolutiontech.ca/img/code/hummingbird.png)
+![Hummingbird](http://revolutiontech.ca/media/img/hummingbird-large.jpg)
 
 ***
 
