@@ -8,7 +8,8 @@ sudo echo "Go Hummingbird!"
 INTERFACE=$(echo $INTERFACE)
 if [[ -z "${INTERFACE}" ]]; then
 	if [[ "${OSTYPE}" == "linux-gnu" ]]; then
-		INTERFACE=$(ip route get 8.8.8.8 | awk '{ print $(NF-2); exit }')
+		#INTERFACE=$(ip route get 8.8.8.8 | awk '{ print $(NF-2); exit }')
+		INTERFACE=$(ip route get 8.8.8.8 | cut -f5 -d' ' | head -1)
 	elif [[ "${OSTYPE}" == "darwin"* ]]; then
 		INTERFACE=$(route get 8.8.8.8 | grep interface | awk '{ print $NF; exit }')
 	else

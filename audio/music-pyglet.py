@@ -2,7 +2,7 @@ from os import listdir
 import random
 import threading
 
-from pydub import AudioSegment
+#from pydub import AudioSegment
 from pygame import mixer
 import vlc
 import config
@@ -74,11 +74,11 @@ class MusicPlayer:
 				threading.Timer(user.length, self.stop_long_song, [user.name]).start()
 				# play the song
 				log(message="Playing {name}'s song {song}.".format(name=user.name, song=user.song))
-				if user.song.endswith('mp3'):
-				 	songname=user.song[:-4]
-				 	mp3song=AudioSegment.from_mp3(user.song)
-				 	mp3song.export(songname+".wav",format="wav")
-				 	user.song=user.song[:-4]+".wav"
+				# if user.song.endswith('mp3'):
+				# 	songname=user.song[:-4]
+				# 	mp3song=AudioSegment.from_mp3(user.song)
+				# 	mp3song.export(songname+".wav",format="wav")
+				# 	user.song=user.song[:-4]+".wav"
 				mixer.music.load(user.song)
 				mixer.music.play()
 			else:
