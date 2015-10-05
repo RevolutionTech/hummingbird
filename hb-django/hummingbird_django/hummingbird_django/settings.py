@@ -68,6 +68,11 @@ DATABASES = {
 MEDIA_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR)
 
+TEMPLATE_PATH = os.path.join(BASE_DIR,'templates')
+
+TEMPLATE_DIRS = (
+    TEMPLATE_PATH,
+    )
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

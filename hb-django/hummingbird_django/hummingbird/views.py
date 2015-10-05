@@ -1,9 +1,35 @@
 from django.shortcuts import render
-from hummingbird.models import UserProfile, UserDevice
+from hummingbird.models import UserProfile, UserDevice, User
 from django.http import HttpResponse
 import datetime
 import urllib
 # Create your views here.
+
+#def index(request):
+#    return HttpResponse("hummingbird index")
+
+
+def index(request):
+    userprofile_list = UserProfile.objects.order_by('-last_played')
+    context_dict = {'userprofiles': userprofile_list}
+    response = render(request, 'index.html',context_dict)
+    return response
+
+def profile(request, user_id):
+	context_dict = {}
+	try:
+		userprofile = UserProfile.objects.get(pk=user_id)
+		context_dict['name'] = userprofile.name
+		if userprofile.song:
+			context_dict['song'] = userprofile.song.name
+		if userprofile.last_played:
+			context_dict['last_played'] = userprofile.last_played.strftime('%Y-%m-%d %H:%M:%S')
+		context_dict['length'] = userprofile.length
+	except UserProfile.DoesNotExist:
+		pass
+	return render(request,'profile.html',context_dict)
+
+
 
 def get_user_from_device(request):
 	if request.method == 'GET':
@@ -48,14 +74,13 @@ def update_last_played(request):
 def get_song_from_user(request):
 	if request.method == 'GET':
 		user_id = request.GET['user_id']
-		user_profile = UserProfile.objects.get(user_id=user)
+		user_profile = UserProfile.objects.get(pk=user_id)
 		song = user_profile.song
 
 def has_user_played_today(request):
 	if request.method == 'GET':
 		user_id = request.GET['user_id']
-		user = User.objects.get(pk=user_id)
-		user_profile = UserProfile.objects.get(user_id=user)
+		user_profile = UserProfile.objects.get(pk=user_id)
 		last_played = user_profile.last_played
 		now = datetime.datetime.now()
 		today = now.date()

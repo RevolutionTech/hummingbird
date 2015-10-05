@@ -4,7 +4,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
 class UserProfile(models.Model):
-	user_id = models.ForeignKey(User)
 	name = models.CharField(max_length=40, null=True)
 	last_played = models.DateTimeField(null=True, blank=True)
 	song = models.FileField(upload_to='media/songs', null=True, blank=True)

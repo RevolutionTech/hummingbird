@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}My Profile{% endblock %}
+
+{% block body_block %}
+<div>
+<td>{{ name }}</td>
+</div>
+<div>
+<ul>
+Details:<br/>
+<li>Song: {% if song %}{{ song }}{% else %}No song!{% endif %}</li>
+<li>Length: {{ length }}
+<li>Last Played: {% if last_played %}{{ last_played }}{% else %}Hasn't played yet!{% endif %}</li>
+</ul>
+{% endblock %}
