@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from hummingbird.models import UserProfile, UserDevice, User
+from hummingbird.forms import UserProfileForm, UserDeviceForm, UserSongForm
 from django.http import HttpResponse
 import datetime
 import urllib
@@ -16,17 +17,46 @@ def index(request):
     return response
 
 def profile(request, user_id):
+	added_song=False
+	added_device=False
 	context_dict = {}
+
+	if request.method == 'POST':
+		userprofile = UserProfile.objects.get(pk=user_id)
+		usersong_form = UserSongForm(data=request.POST)
+		device_form = UserDeviceForm(data=request.POST)
+	
+		if usersong_form.is_valid():
+			userprofile.song = request.FILES['song']
+			userprofile.save()
+			added_song = True
+	
+		if device_form.is_valid():
+			device = device_form.save(commit=False)
+			device.user_profile = userprofile
+			added_device = True
+			device.save()
+	
 	try:
 		userprofile = UserProfile.objects.get(pk=user_id)
+		context_dict['profile'] = userprofile
 		context_dict['name'] = userprofile.name
 		if userprofile.song:
 			context_dict['song'] = userprofile.song.name
 		if userprofile.last_played:
 			context_dict['last_played'] = userprofile.last_played.strftime('%Y-%m-%d %H:%M:%S')
 		context_dict['length'] = userprofile.length
+		
+		devices = UserDevice.objects.filter(user_profile=userprofile)
+		context_dict['devices'] = devices
+		usersong_form = UserSongForm()
+		device_form = UserDeviceForm()
+		context_dict['usersong_form'] = usersong_form
+		context_dict['device_form'] = device_form
 	except UserProfile.DoesNotExist:
 		pass
+	context_dict['added_device'] = added_device
+	context_dict['added_song'] = added_song
 	return render(request,'profile.html',context_dict)
 
 
@@ -92,7 +122,26 @@ def has_user_played_today(request):
 		)
 
 
+def add_user(request):
+	registered = False
+	if request.method == 'POST':
+		profile_form = UserProfileForm(data=request.POST)
+		device_form = UserDeviceForm(data=request.POST)
+		if profile_form.is_valid():
+			userprofile = profile_form.save()
+			if 'song' in request.FILES:
+				userprofile.song = request.FILES['song']
+			userprofile.save()
+			if device_form.is_valid():
+				device_form.user_profile = userprofile
+				device_form.save()
 
+			registered = True
+	else:
+		profile_form = UserProfileForm()
+		device_form = UserDeviceForm()
+
+	return render(request,'add_user.html', {'profile_form':profile_form, 'device_form':device_form, 'registered':registered})
 
 
 def testuser(request):

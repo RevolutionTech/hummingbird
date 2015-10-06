@@ -7,6 +7,16 @@ class UserProfileForm(forms.ModelForm):
 		model = UserProfile
 		fields = ('name','song','length')
 
+class UserDeviceForm(forms.ModelForm):
+	class Meta:
+		model = UserDevice
+		fields = ('mac_id',)
+
+class UserSongForm(forms.ModelForm):
+	class Meta:
+		model = UserProfile
+		fields = ('song','length')
+
 class UserForm(forms.ModelForm):
 	password = forms.CharField(widget=forms.PasswordInput())
 
