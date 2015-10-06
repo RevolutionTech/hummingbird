@@ -37,12 +37,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'index' %}">Home</a></li>
-
-                    {% if user.is_authenticated %}
-
-                    {% endif %}
-                                <li><a href="{% url 'about' %}">About</a></li>
-
+                <li><a href="{% url 'about' %}">About</a></li>
               </ul>
         </div>
       </div>

@@ -66,7 +66,7 @@ def get_user_from_device(request):
 		try:
 			device = request.GET['mac_id']
 			userdevice = UserDevice.objects.get(mac_id=device)
-			user = userdevice.user_profile.user_id.id
+			user = userdevice.user_profile.id
 			return HttpResponse(user, content_type='text/plain')
 		except UserDevice.DoesNotExist:
 			return HttpResponse("0", content_type='text/plain')
@@ -78,7 +78,6 @@ def build_user_from_device(request):
 			device=urllib.unquote(request.GET['mac_id']).decode('utf8')
 			print device
 			userdevice = UserDevice.objects.get(mac_id=device)
-			user = userdevice.user_profile.user_id.id
 			user_dict={}
 			user_dict['name'] = userdevice.user_profile.name
 			user_dict['song'] = userdevice.user_profile.song.name

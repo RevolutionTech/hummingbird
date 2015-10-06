@@ -66,7 +66,7 @@ class System:
 				#print_MAC_address(address=address, user=user)
 
 				### See if UserDevice exists
-				payload = {'mac_id': address}
+				payload = {'mac_id': address.lower()}
 				r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)
 				user_dict = ast.literal_eval(r.text)
 				if user_dict!=0:
