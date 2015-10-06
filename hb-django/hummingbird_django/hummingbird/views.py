@@ -153,11 +153,8 @@ def delete_device(request):
 def delete_user(request):
 	user_id = request.GET['user_id']
 	userprofile=UserProfile.objects.get(pk=user_id)
-	print userprofile
 	devices = UserDevice.objects.filter(user_profile=userprofile)
-	print devices
 	for device in devices:
-		print device
 		device.delete()
 	userprofile.delete()
 	users = UserProfile.objects.all()
