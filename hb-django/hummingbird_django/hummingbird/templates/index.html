@@ -17,10 +17,11 @@
         <h3 class = "panel-title">Users</h3>
   </div>
 </div>
+<div id = "users-div">
       {% if userprofiles %}
         <ul class="list-group">
           {% for profile in userprofiles %}
-          <li class="list-group-item"><a href="/hummingbird/profile/{{profile.id}}">{{ profile.name }}</a> - {{ profile.song.name }}</li>
+          <td><li class="list-group-item text-left"><div class="user-div"><a href="/hummingbird/profile/{{profile.id}}">{{ profile.name }}</a> - {% if profile.song %}{{ profile.song.name }}{% else %}<i>No song... only silence</i>{% endif %}   <div id="delete-user" data-userprofile="{{profile.id}}" class="delete-user glyphicon glyphicon-remove" style="color:red"></div></div></li></td>
           {% endfor %}
           </ul>
       {% else %}

@@ -142,19 +142,26 @@ def add_user(request):
 
 	return render(request,'add_user.html', {'profile_form':profile_form, 'device_form':device_form, 'registered':registered})
 
+def delete_device(request):
+	device_id = request.GET['device_id']
+	device = UserDevice.objects.get(pk=device_id)
+	device.delete()
+	user_id = request.GET['user_id']
+	devices = UserDevice.objects.filter(user_profile=user_id)
+	return render(request, 'devices.html', {'devices':devices})
 
-def testuser(request):
-	if request.method == 'GET':
-		device = request.GET['mac_id']
+def delete_user(request):
+	user_id = request.GET['user_id']
+	userprofile=UserProfile.objects.get(pk=user_id)
+	print userprofile
+	devices = UserDevice.objects.filter(user_profile=userprofile)
+	print devices
+	for device in devices:
 		print device
-		userdevice = UserDevice.objects.get(mac_id=device)
-		print userdevice
-		userprofile = userdevice.user_profile
-		print userprofile
-		song = userprofile.song
-		print song
-		return HttpResponse(userprofile, content_type='text/plain')
-	return HttpResponse("2")
+		device.delete()
+	userprofile.delete()
+	users = UserProfile.objects.all()
+	return render(request, 'users.html', {'userprofiles':users})
 
 
 def about(request):

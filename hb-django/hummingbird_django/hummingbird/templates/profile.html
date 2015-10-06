@@ -21,16 +21,18 @@ Device added!
 <li>Length: {{ length }}
 <li>Last Played: {% if last_played %}{{ last_played }}{% else %}Hasn't played yet!{% endif %}</li>
 <li>Devices:
+<div id="device-div">
 {% if devices %}
 <ul>
 {% for device in devices %}
-<li class="list-group-item">{{ device.mac_id }}</li>
+
+<li class="list-group-item">{{ device.mac_id }}  <span id="delete_device" data-deviceid="{{ device.id }}" data-userprofile="{{device.user_profile.id}}" class="delete_device glyphicon glyphicon-remove" style="color:red"></span></li>
 {% endfor %}
 </ul>
 {% else %}
 No devices!
 {% endif %}
-<p>
+</div><p>
 <p>
 <p>
 Update Song:<br>
