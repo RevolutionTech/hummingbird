@@ -13,7 +13,7 @@ import urllib
 def index(request):
     userprofile_list = UserProfile.objects.order_by('-last_played')
     context_dict = {'userprofiles': userprofile_list}
-    response = render(request, 'index.html',context_dict)
+    response = render(request, 'index.html', context_dict)
     return response
 
 def profile(request, user_id):
@@ -65,7 +65,7 @@ def get_user_from_device(request):
 	if request.method == 'GET':
 		try:
 			device = request.GET['mac_id']
-			userdevice = UserDevice.objects.get(mac_id=device)
+			userdevice = UserDevice.objects.get(mac_id=device.lower())
 			user = userdevice.user_profile.id
 			return HttpResponse(user, content_type='text/plain')
 		except UserDevice.DoesNotExist:
@@ -76,8 +76,7 @@ def build_user_from_device(request):
 	if request.method == 'GET':
 		try:
 			device=urllib.unquote(request.GET['mac_id']).decode('utf8')
-			print device
-			userdevice = UserDevice.objects.get(mac_id=device)
+			userdevice = UserDevice.objects.get(mac_id=device.lower())
 			user_dict={}
 			user_dict['name'] = userdevice.user_profile.name
 			user_dict['song'] = userdevice.user_profile.song.name

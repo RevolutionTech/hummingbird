@@ -22,5 +22,10 @@ class UserDevice(models.Model):
 	user_profile = models.ForeignKey(UserProfile, null=True)
 	mac_id = models.CharField(max_length=20, unique=True)
 
+	def save(self, *args, **kwargs):
+		lowermac = mac_id.lower()
+		self.mac_id=lowermac
+		super(UserDevice, self).save(*args, **kwargs)
+
 	def __unicode__(self):
 		return self.mac_id
