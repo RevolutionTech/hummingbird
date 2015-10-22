@@ -23,7 +23,7 @@ class UserDevice(models.Model):
 	mac_id = models.CharField(max_length=20, unique=True)
 
 	def save(self, *args, **kwargs):
-		lowermac = mac_id.lower()
+		lowermac = self.mac_id.lower()
 		self.mac_id=lowermac
 		super(UserDevice, self).save(*args, **kwargs)
 

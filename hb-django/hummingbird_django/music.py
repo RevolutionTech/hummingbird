@@ -3,7 +3,7 @@ import random
 import threading
 from pydub import AudioSegment
 from pygame import mixer
-import vlc
+#import vlc
 import config
 from utils import log
 
@@ -91,8 +91,8 @@ class MusicPlayer:
 		print "user_name is " + user_name
 		if self.user_song_currently_playing == user_name:
 			print "Song is what is playing"
-			#mixer.music.fadeout(config.time_fadeout_song)
-			mixer.music.stop()
+			mixer.music.fadeout(config.time_fadeout_song)
+			
 	
 	def queue_song_after_delay(self, user):
 		log(message="Queued {name}'s song {song}.".format(name=user.name, song=user.song))

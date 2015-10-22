@@ -28,6 +28,7 @@ def profile(request, user_id):
 	
 		if usersong_form.is_valid():
 			userprofile.song = request.FILES['song']
+			userprofile.length = usersong_form.cleaned_data['length']
 			userprofile.save()
 			added_song = True
 	
@@ -79,9 +80,14 @@ def build_user_from_device(request):
 			userdevice = UserDevice.objects.get(mac_id=device.lower())
 			user_dict={}
 			user_dict['name'] = userdevice.user_profile.name
-			user_dict['song'] = userdevice.user_profile.song.name
+			if userdevice.user_profile.song.name=='':
+				return HttpResponse("0", content_type='text/plain')
+			else:
+				user_dict['song'] = userdevice.user_profile.song.name
 			user_dict['length'] = userdevice.user_profile.length
-			user_dict['last_played'] = userdevice.user_profile.last_played.strftime('%Y-%m-%d %H:%M:%S')
+			if userdevice.user_profile.last_played is not None:
+				user_dict['last_played'] = userdevice.user_profile.last_played.strftime('%Y-%m-%d %H:%M:%S')
+			else: user_dict['last_played'] = datetime.datetime(1991,1,1).strftime('%Y-%m-%d %H:%M:%S')
 			return HttpResponse(str(user_dict), content_type='text/plain')
 	### TO DO: Create dictionary/list to return
 		except UserDevice.DoesNotExist:
@@ -127,6 +133,7 @@ def add_user(request):
 		device_form = UserDeviceForm(data=request.POST)
 		if profile_form.is_valid():
 			userprofile = profile_form.save()
+			userprofile.last_played = datetime.datetime.now()
 			if 'song' in request.FILES:
 				userprofile.song = request.FILES['song']
 			userprofile.save()
@@ -161,4 +168,4 @@ def delete_user(request):
 
 
 def about(request):
-	pass
+	return render(request, 'about.html')
