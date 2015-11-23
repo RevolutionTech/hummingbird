@@ -11,7 +11,6 @@ from network import get_MAC, print_MAC_address
 from music import MusicPlayer
 from utils import log, generate_random_suffix, is_unknown_user
 
-
 class User:
 	def __init__(self, system, name=config.unknown_user_prefix, song=config.need_to_assign, length=config.time_max_song_length, arrival=datetime.datetime.now()):
 		if is_unknown_user(name=name):
@@ -48,8 +47,6 @@ class User:
 class System:
 	def __init__(self):
 		log(message="Initializing...")
-		#local_payload_cache uses mac_id ("address") as key, with the value being a dictionary of mac_id and datetime value of last time the api was pinged.
-		self.local_payload_cache = {}		
 		self.music_player = MusicPlayer()
 		self.all_addresses = self.read_in_addresses()
 		self.waiting_for_input = False
@@ -68,33 +65,10 @@ class System:
 				#print_MAC_address(address=address, user=user)
 
 				### See if UserDevice exists
-
-				
-				## Pings Hummingbird Django server. If use_cache is set to True, use self.local_payload_cache as a cache.
-				if config.use_cache:
-					if address.lower() in self.local_payload_cache:
-						# payload is a tuple of address and last_checked_datetime
-						payload = self.local_payload_cache[address.lower()]
-						# Set a 60 second cache				
-						if (datetime.datetime.now() - payload['last_sent_dt']).seconds > config.cache_time_seconds:
-							r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)
-							payload['last_sent_dt'] = datetime.datetime.now()
-							self.local_payload_cache[address.lower()] = payload
-							cached = False
-						else:
-							cached = True
-					else:
-						payload = {'mac_id': address.lower(), 'last_sent_dt': datetime.datetime.now()}
-						self.local_payload_cache[address.lower()] = payload						
-						r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)				
-						cached = False
-				else:
-					payload = {'mac_id': address.lower(), 'last_sent_dt': datetime.datetime.now()}
-					r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)				
-					cached = False
-
+				payload = {'mac_id': address}
+				r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)
 				user_dict = ast.literal_eval(r.text)
-				if not cached and user_dict!=0:
+				if user_dict!=0:
 					print "found user"
 					print str(user_dict)
 					## TO DO: CREATE USER FROM API
@@ -109,7 +83,7 @@ class System:
 						if not is_unknown_user(name=user.name) or config.play_unknowns:
 							log(message="Detected activity from {name}.".format(name=user.name))
 							user.queue_song(music_player=self.music_player)
-							updated = requests.get("http://127.0.0.1:8000/hummingbird/update_last_played/", params=payload)
+							r =requests.get("http://127.0.0.1:8000/hummingbird/update_last_played/", params=payload)
 
 	def input_timeout(self):
 		if self.waiting_for_input:
@@ -120,6 +94,7 @@ class System:
 
 	def read_in_addresses(self):
 		addresses = {}
+
 		lines = []
 		# read in addresses from the current songs.csv
 		with open(config.data_file, 'r') as f:

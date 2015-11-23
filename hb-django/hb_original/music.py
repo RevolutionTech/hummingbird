@@ -1,9 +1,10 @@
 from os import listdir
 import random
 import threading
+
 from pydub import AudioSegment
 from pygame import mixer
-#import vlc
+import vlc
 import config
 from utils import log
 
@@ -74,8 +75,6 @@ class MusicPlayer:
 				# play the song
 				log(message="Playing {name}'s song {song}.".format(name=user.name, song=user.song))
 				print user.song
-				## Pygame seems to have issues with MP3 files on certain computers, so this is a hacky way to get around it.
-				## AudioSegment converts it to a wave file so that it will play consistently.
 				if user.song.endswith('mp3'):
 				 	songname=user.song[:-4]
 				 	mp3song=AudioSegment.from_mp3(user.song)
@@ -88,14 +87,13 @@ class MusicPlayer:
 				self.user_song_currently_playing = None
 
 	def stop_long_song(self, user_name):
-		if self.user_song_currently_playing:
-			print 'stopping long song'
-			print "user_song_currently_playing is "+self.user_song_currently_playing
-			print "user_name is " + user_name
-			if self.user_song_currently_playing == user_name:
-				print "Song is what is playing"
-				mixer.music.fadeout(config.time_fadeout_song)
-			
+		print 'stopping long song'
+		print "user_song_currently_playing is "+self.user_song_currently_playing
+		print "user_name is " + user_name
+		if self.user_song_currently_playing == user_name:
+			print "Song is what is playing"
+			#mixer.music.fadeout(config.time_fadeout_song)
+			mixer.music.stop()
 	
 	def queue_song_after_delay(self, user):
 		log(message="Queued {name}'s song {song}.".format(name=user.name, song=user.song))

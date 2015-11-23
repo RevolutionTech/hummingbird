@@ -5,6 +5,7 @@
 # User-specific #
 #################
 *.mp3
+*.wav
 tcpdump_dnm.log
 tcpdump_error.log
 songs.csv

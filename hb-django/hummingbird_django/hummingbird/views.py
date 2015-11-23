@@ -4,23 +4,22 @@ from hummingbird.forms import UserProfileForm, UserDeviceForm, UserSongForm
 from django.http import HttpResponse
 import datetime
 import urllib
-# Create your views here.
-
-#def index(request):
-#    return HttpResponse("hummingbird index")
 
 
+## TO-DO: Add div and context for files in library to allow for file deletion. As of right now, files will just accumulate in the library.
 def index(request):
     userprofile_list = UserProfile.objects.order_by('-last_played')
     context_dict = {'userprofiles': userprofile_list}
     response = render(request, 'index.html', context_dict)
     return response
 
+
 def profile(request, user_id):
 	added_song=False
 	added_device=False
 	context_dict = {}
 
+	## If we're getting data via post method, update whatever fields we've been given.
 	if request.method == 'POST':
 		userprofile = UserProfile.objects.get(pk=user_id)
 		usersong_form = UserSongForm(data=request.POST)
@@ -38,6 +37,7 @@ def profile(request, user_id):
 			added_device = True
 			device.save()
 	
+	#Regardless of method (GET/POST), let's return info for the user's profile.
 	try:
 		userprofile = UserProfile.objects.get(pk=user_id)
 		context_dict['profile'] = userprofile
@@ -61,7 +61,7 @@ def profile(request, user_id):
 	return render(request,'profile.html',context_dict)
 
 
-
+## Checks if user exists. If so, return user name. Otherwise, return "0". 
 def get_user_from_device(request):
 	if request.method == 'GET':
 		try:
@@ -73,6 +73,8 @@ def get_user_from_device(request):
 			return HttpResponse("0", content_type='text/plain')
 	pass
 
+
+## Returns information necessary to build the User object if mac_id is recognized. If not, return "0".
 def build_user_from_device(request):
 	if request.method == 'GET':
 		try:
@@ -89,11 +91,12 @@ def build_user_from_device(request):
 				user_dict['last_played'] = userdevice.user_profile.last_played.strftime('%Y-%m-%d %H:%M:%S')
 			else: user_dict['last_played'] = datetime.datetime(1991,1,1).strftime('%Y-%m-%d %H:%M:%S')
 			return HttpResponse(str(user_dict), content_type='text/plain')
-	### TO DO: Create dictionary/list to return
 		except UserDevice.DoesNotExist:
 			return HttpResponse("0", content_type='text/plain')
 	pass
 
+
+## Once a user's song is played, Hummingbird uses this to update their "last_played" field to the current datetime.
 def update_last_played(request):
 	if request.method == 'GET':
 		device=urllib.unquote(request.GET['mac_id']).decode('utf8')
@@ -105,11 +108,13 @@ def update_last_played(request):
 	else:
 		return HttpResponse("0", content_type='text/plain')
 
+
 def get_song_from_user(request):
 	if request.method == 'GET':
 		user_id = request.GET['user_id']
 		user_profile = UserProfile.objects.get(pk=user_id)
 		song = user_profile.song
+
 
 def has_user_played_today(request):
 	if request.method == 'GET':
@@ -138,8 +143,9 @@ def add_user(request):
 				userprofile.song = request.FILES['song']
 			userprofile.save()
 			if device_form.is_valid():
-				device_form.user_profile = userprofile
-				device_form.save()
+				deviceform = device_form.save()
+				deviceform.user_profile = userprofile
+				deviceform.save()
 
 			registered = True
 	else:
@@ -147,6 +153,8 @@ def add_user(request):
 		device_form = UserDeviceForm()
 
 	return render(request,'add_user.html', {'profile_form':profile_form, 'device_form':device_form, 'registered':registered})
+
+
 
 def delete_device(request):
 	device_id = request.GET['device_id']
@@ -156,6 +164,8 @@ def delete_device(request):
 	devices = UserDevice.objects.filter(user_profile=user_id)
 	return render(request, 'devices.html', {'devices':devices})
 
+
+## Deletes a user's userdevice objects, then deletes that user's userprofile.
 def delete_user(request):
 	user_id = request.GET['user_id']
 	userprofile=UserProfile.objects.get(pk=user_id)
