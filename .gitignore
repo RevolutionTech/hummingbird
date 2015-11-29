@@ -5,7 +5,10 @@
 # User-specific #
 #################
 *.mp3
-ignored_hosts
+*.wav
+tcpdump_dnm.log
+tcpdump_error.log
+songs.csv
 
 # OS generated files #
 ######################
@@ -20,3 +23,8 @@ Thumbs.db
 # Secure files #
 ################
 hummingbird/hummingbird/settings_secret.py
+
+# Databases #
+####################
+db.sqlite3
+
