@@ -48,7 +48,8 @@ class User:
 class System:
 	def __init__(self):
 		log(message="Initializing...")
-		#local_payload_cache uses mac_id ("address") as key, with the value being a dictionary of mac_id and datetime value of last time the api was pinged.
+		# local_payload_cache uses mac_id ("address") as key, with the value being a dictionary of mac_id and datetime value of last time the api was pinged.
+		# Cache is only used if use_cache is set to True in config.py
 		self.local_payload_cache = {}		
 		self.music_player = MusicPlayer()
 		self.all_addresses = self.read_in_addresses()
@@ -61,14 +62,6 @@ class System:
 			addresses = get_MAC(line=stdin.readline())
 			self.waiting_for_input = False
 			for address in addresses:
-				# add address to dict
-				#currently commented for testing
-				#self.add_new_address(address=address)
-				#user = self.all_addresses[address]
-				#print_MAC_address(address=address, user=user)
-
-				### See if UserDevice exists
-
 				
 				## Pings Hummingbird Django server. If use_cache is set to True, use self.local_payload_cache as a cache.
 				if config.use_cache:
@@ -93,7 +86,9 @@ class System:
 					r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)				
 					cached = False
 
+				## Convert the string representation of a dicitonary with user info into a dictionary object.
 				user_dict = ast.literal_eval(r.text)
+				
 				if not cached and user_dict!=0:
 					print "found user"
 					print str(user_dict)

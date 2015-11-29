@@ -23,6 +23,8 @@ class MusicPlayer:
 			time_wait_to_play = 0
 		threading.Timer(interval=time_wait_to_play, function=self.play_song_on_queue).start()
 
+	## Random songs are currently deprecated. We may want
+	## to add random songs back in, but server-side.
 	def find_random_songs(self):
 		randomDir = config.audio_dir + config.random_subdir
 		random_songs = {}
@@ -31,9 +33,13 @@ class MusicPlayer:
 				random_songs[randomDir+song] = 0
 		return random_songs
 
+	## Random songs are currently deprecated. We may want
+	## to add random songs back in, but server-side.
 	def increment_random_song_use(self, song):
 		self.random_songs[song] += 1
 
+	## Random songs are currently deprecated. We may want
+	## to add random songs back in, but server-side.
 	def get_random_song(self):
 		# generate new random stack, if required
 		if len(self.random_stack) == 0:
@@ -94,8 +100,7 @@ class MusicPlayer:
 			print "user_name is " + user_name
 			if self.user_song_currently_playing == user_name:
 				print "Song is what is playing"
-				mixer.music.fadeout(config.time_fadeout_song)
-			
+				mixer.music.fadeout(config.time_fadeout_song)			
 	
 	def queue_song_after_delay(self, user):
 		log(message="Queued {name}'s song {song}.".format(name=user.name, song=user.song))

@@ -8,6 +8,7 @@ time_reset_time = datetime.time(hour=4, minute=0) # 4:00am
 time_wait_to_play = 60 * 5 # 5 minutes
 time_delay_to_play_song = 3
 #time_check_queue = 0.25
+## On some machines, if the time_check_queue is too fast, it causes issues.
 time_check_queue = 3
 time_input_timeout = 30
 time_max_song_length = 20
