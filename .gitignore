@@ -19,3 +19,8 @@ songs.csv
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Databases #
+####################
+db.sqlite3
+

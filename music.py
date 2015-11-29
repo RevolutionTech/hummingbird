@@ -1,10 +1,9 @@
 from os import listdir
 import random
 import threading
-
 from pydub import AudioSegment
 from pygame import mixer
-import vlc
+#import vlc
 import config
 from utils import log
 
@@ -24,6 +23,8 @@ class MusicPlayer:
 			time_wait_to_play = 0
 		threading.Timer(interval=time_wait_to_play, function=self.play_song_on_queue).start()
 
+	## Random songs are currently deprecated. We may want
+	## to add random songs back in, but server-side.
 	def find_random_songs(self):
 		randomDir = config.audio_dir + config.random_subdir
 		random_songs = {}
@@ -32,9 +33,13 @@ class MusicPlayer:
 				random_songs[randomDir+song] = 0
 		return random_songs
 
+	## Random songs are currently deprecated. We may want
+	## to add random songs back in, but server-side.
 	def increment_random_song_use(self, song):
 		self.random_songs[song] += 1
 
+	## Random songs are currently deprecated. We may want
+	## to add random songs back in, but server-side.
 	def get_random_song(self):
 		# generate new random stack, if required
 		if len(self.random_stack) == 0:
@@ -74,6 +79,9 @@ class MusicPlayer:
 				threading.Timer(user.length, self.stop_long_song, [user.name]).start()
 				# play the song
 				log(message="Playing {name}'s song {song}.".format(name=user.name, song=user.song))
+				print user.song
+				## Pygame seems to have issues with MP3 files on certain computers, so this is a hacky way to get around it.
+				## AudioSegment converts it to a wave file so that it will play consistently.
 				if user.song.endswith('mp3'):
 				 	songname=user.song[:-4]
 				 	mp3song=AudioSegment.from_mp3(user.song)
@@ -86,13 +94,13 @@ class MusicPlayer:
 				self.user_song_currently_playing = None
 
 	def stop_long_song(self, user_name):
-		print 'stopping long song'
-		print "user_song_currently_playing is "+self.user_song_currently_playing
-		print "user_name is "+user_name
-		if self.user_song_currently_playing == user_name:
-			print "Song is what is playing"
-			#mixer.music.fadeout(config.time_fadeout_song)
-			mixer.music.stop()
+		if self.user_song_currently_playing:
+			print 'stopping long song'
+			print "user_song_currently_playing is "+self.user_song_currently_playing
+			print "user_name is " + user_name
+			if self.user_song_currently_playing == user_name:
+				print "Song is what is playing"
+				mixer.music.fadeout(config.time_fadeout_song)			
 	
 	def queue_song_after_delay(self, user):
 		log(message="Queued {name}'s song {song}.".format(name=user.name, song=user.song))
