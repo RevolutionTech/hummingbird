@@ -56,6 +56,7 @@ With everything installed and all files in place, you may now create the databas
     python manage.py migrate
 
 You will also need to create a superuser for Admin use, which you can do with
+    
     python manage.py createsuperuser
 
 ### Running
@@ -67,7 +68,8 @@ Hitting that URL should reach the user interface where users can create accounts
 
 2) The Hummingbird Daemon
 Once the Django server has been configured and is running, then the network manager and media player can be initialized. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running. You can fire this off by running the command:
-./go_hummingbird
+
+	./go_hummingbird
 
 Note that while Hummingbird is running, the network interface may be unable to connect to the router. This could mean that *you will not be able to connect to the Internet*. Once you are done using Hummingbird, you may have to turn your Wifi off and back on again to resume normal operation.
 
