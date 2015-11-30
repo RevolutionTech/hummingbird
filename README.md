@@ -1,5 +1,5 @@
-# Hummingbird: Walk-in songs
-# Created by: Lucas Connors
+# Hummingbird: Walk In With Style
+# Created by: Lucas Connors & Ittai Barzilay
 
 ![Hummingbird](http://revolutiontech.ca/img/code/hummingbird.png)
 
@@ -9,9 +9,9 @@
 
 Hummingbird is a server used to play custom theme songs (or walk-in songs) when a person enters a building. Hummingbird monitors the network and detects when a new device (identified by its MAC address) connects to the router. When a new device connects, Hummingbird plays the song associated with that device.
 
-Hummingbird is designed to run continuously on a server connected to speakers and Wi-Fi. A [Raspberry Pi](http://www.raspberrypi.org/) with a Wi-Fi dongle may prove to be a good setup for Hummingbird.
+Hummingbird has two components: the Django 1.7 server and the Hummingbird daemon. The server is the interface for adding users, device MAC addresses, and songs. The daemon runs in the background sniffing for MAC addresses, and then fires off a local request to the Django server to see if a song should be played, and if so, which one.
 
-Hummingbird is under active development. Follow my progress [on Trello](https://trello.com/b/DK5BO6ev/hummingbird).
+Hummingbird is under active development. Follow our progress [on Trello](https://trello.com/b/DK5BO6ev/hummingbird).
 
 ## Setup
 
@@ -19,16 +19,7 @@ Hummingbird is under active development. Follow my progress [on Trello](https://
 
 ### Prerequisites
 
-To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.org/CaptureSetup/WLAN#Turning_on_monitor_mode) (sometimes called promiscuous mode) on the network interface being used by the server. This is so Hummingbird can read packets from other devices in order to detect when a new device is nearby. You will also need to install [tshark](https://www.wireshark.org/docs/man-pages/tshark.html), which you can install on debian with:
-
-    sudo apt-get install tshark
-    sudo setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
-
-The latter command gives your user permission to read data directly from the network. Additionally, Hummingbird requires [MySQL](http://www.mysql.com/), which you can install on debian with:
-
-    sudo apt-get -y install mysql-server mysql-client libmysqlclient-dev
-
-Remember the database credentials, because we will need them later in the setup.
+To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.org/CaptureSetup/WLAN#Turning_on_monitor_mode) (sometimes called promiscuous mode) on the network interface being used by the server. This is so Hummingbird can read packets from other devices in order to detect when a new device is nearby. Hummingbird currently uses TCPDump, but we will probably switch to tshark at some point. 
 
 I recommend using a virtual environment for Hummingbird. If you don't have it already, you can install [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html) and virtualenvwrapper globally with pip:
 
@@ -42,9 +33,12 @@ In the future you can reactivate the virtual environment with:
 
     workon hummingbird
 
+
+One thing to note is that sometimes virtual environments have issues getting access to network-level activity, which Hummingbird needs to sniff out the MAC addresses.
+
 ### Installation
 
-Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), MySQL-python, [django](https://www.djangoproject.com/), and [south](http://south.readthedocs.org/en/latest/installation.html):
+Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), MySQL-python, [django 1.7](https://www.djangoproject.com/), and [pydub](http://pydub.com/):
 
     sudo apt-get -y install libsox-fmt-mp3 libsox-fmt-all mpg321 dir2ogg libav-tools
     sudo apt-get -y build-dep python-pygame
@@ -52,14 +46,7 @@ Then in your virtual environment, you will need to install [pygame](http://www.p
 
 ### Configuration
 
-Next we will need to create a file in the same directory as `settings.py` called `settings_secret.py`. This is where we will store all of the settings that are specific to your instance of Hummingbird. Most of these settings should be only known to you. Your file should define a secret key, the database credentials, and an email where you (as an administrator of the Hummingbird instance) can be reached. Your `settings_secret.py` file might look something like:
-
-    SECRET_KEY = '-3f5yh&(s5%9uigtx^yn=t_woj0@90__fr!t2b*96f5xoyzb%b'
-    DATABASE_USER = 'root'
-    DATABASE_PASSWORD = 'abc123'
-    FEEDBACK_EMAIL = 'admin+hummingbird@company.com'
-
-Of course you should [generate your own secret key](http://stackoverflow.com/a/16630719) and use a more secure password for your database.
+You should [generate your own secret key](http://stackoverflow.com/a/16630719) for the settings.py file.
 
 Additional configuration is available by modifying the `config.py` file.
 
@@ -68,23 +55,22 @@ With everything installed and all files in place, you may now create the databas
     python manage.py syncdb
     python manage.py migrate
 
+You will also need to create a superuser for Admin use, which you can do with
+    python manage.py createsuperuser
+
 ### Running
 
-The server can be run on port 8000 with `python manage.py runserver 0.0.0.0:8000`. Then the server can be reached from the browser at `http://0.0.0.0:8000/`.
+1) The Django Server
+The server can be run on port 8000 with `python manage.py runserver 0.0.0.0:8000`. Then the server can be reached from the browser at `http://0.0.0.0:8000/`. Specifying "0.0.0.0" allows external computers to access the server on port 8000 of the device running the server. So if the local IP address for the computer was 10.0.0.1, then any computer on the same network should be able to access hummingbird by navigating to 10.0.0.1:8000.
 
 Hitting that URL should reach the user interface where users can create accounts, upload new songs, and modify their profile information.
 
-Once Hummingbird has been configured and the server is running, then the network manager and media player can be activated by running the `init_hummingbird()` function from the shell:
-
-    python manage.py shell
-    >>> from users.admin import UserManager
-    >>> um = UserManager()
-    >>> um.init_hummingbird()
-
-This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running.
+2) The Hummingbird Daemon
+Once the Django server has been configured and is running, then the network manager and media player can be initialized. This will generate a persistent instance of the network manager and media player, so you will not want to do this multiple times while the server is running. You can fire this off by running the command:
+./go_hummingbird
 
 Note that while Hummingbird is running, the network interface may be unable to connect to the router. This could mean that *you will not be able to connect to the Internet*. Once you are done using Hummingbird, you may have to turn your Wifi off and back on again to resume normal operation.
 
 ## Improve Hummingbird
 
-Any bugs to report, suggestions for improvement, feature requests, etc. please feel free to send my way. Contributions to the repo are especially welcome!
+Any bugs to report, suggestions for improvement, feature requests, etc. please feel free to send our way. Contributions to the repo are especially welcome!
