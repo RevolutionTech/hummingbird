@@ -9,7 +9,7 @@
 
 Hummingbird is a server used to play custom theme songs (or walk-in songs) when a person enters a building. Hummingbird monitors the network and detects when a new device (identified by its MAC address) connects to the router. When a new device connects, Hummingbird plays the song associated with that device.
 
-Hummingbird has two components: the Django 1.7 server and the Hummingbird daemon. The server is the interface for adding users, device MAC addresses, and songs. The daemon runs in the background sniffing for MAC addresses, and then fires off a local request to the Django server to see if a song should be played, and if so, which one.
+Hummingbird has two components: the Django server and the Hummingbird daemon. The server is the interface for adding users, device MAC addresses, and songs. The daemon runs in the background sniffing for MAC addresses, and then fires off a local request to the Django server to see if a song should be played, and if so, which one.
 
 Hummingbird is under active development. Follow our progress [on Trello](https://trello.com/b/DK5BO6ev/hummingbird).
 
