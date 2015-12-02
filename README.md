@@ -1,7 +1,7 @@
 # Hummingbird: Walk In With Style
 # Created by: Lucas Connors & Ittai Barzilay
 
-![Hummingbird](http://revolutiontech.ca/img/code/hummingbird.png)
+![Hummingbird](http://revolutiontech.ca/media/img/hummingbird-large.jpg)
 
 ***
 
@@ -75,4 +75,6 @@ Note that while Hummingbird is running, the network interface may be unable to c
 
 ## Improve Hummingbird
 
+
 Any bugs to report, suggestions for improvement, feature requests, etc. please feel free to send our way. Contributions to the repo are especially welcome!
+
