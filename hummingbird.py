@@ -48,6 +48,7 @@ class User:
     def __unicode__(self):
         return "{name}: {song} ({length}s)".format(name=self.name, song=self.song, length=self.length)
 
+
 class System:
     def __init__(self):
         log(message="Initializing...")
