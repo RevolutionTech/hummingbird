@@ -27,4 +27,3 @@ hummingbird/hummingbird/settings_secret.py
 # Databases #
 ####################
 db.sqlite3
-
