@@ -1,11 +1,14 @@
-from os import remove
-from sys import stdin
 import datetime
+import threading
+from sys import stdin
+
+
+import ast
+import requests
 import random
 import string
-import ast
-import threading
-import requests
+from os import remove
+
 import config
 from network import get_MAC, print_MAC_address
 from music import MusicPlayer
