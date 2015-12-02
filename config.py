@@ -7,7 +7,6 @@ play_unknowns = False
 time_reset_time = datetime.time(hour=4, minute=0) # 4:00am
 time_wait_to_play = 60 * 5 # 5 minutes
 time_delay_to_play_song = 3
-#time_check_queue = 0.25
 ## On some machines, if the time_check_queue is too fast, it causes issues.
 time_check_queue = 3
 time_input_timeout = 30
@@ -30,7 +29,6 @@ unknown_user_suffix_length = 5
 # Cache Settings
 use_cache = False
 cache_time_seconds = 60
-
 
 # Network
 tcpdump_re_ignore = [
