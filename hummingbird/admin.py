@@ -6,4 +6,3 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 admin.site.register(UserProfile,UserProfileAdmin)
 admin.site.register(UserDevice)
-# Register your models here.
