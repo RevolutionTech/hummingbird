@@ -26,7 +26,7 @@ class UserDevice(models.Model):
 
 	def save(self, *args, **kwargs):
 		lowermac = self.mac_id.lower()
-		self.mac_id=lowermac
+		self.mac_id = lowermac
 		super(UserDevice, self).save(*args, **kwargs)
 
 	def __unicode__(self):
