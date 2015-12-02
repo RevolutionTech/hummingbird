@@ -1,7 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-
+from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
 
@@ -9,11 +8,11 @@ class UserProfile(models.Model):
 	last_played = models.DateTimeField(null=True, blank=True)
 	song = models.FileField(upload_to='media/songs', null=True, blank=True)
 	length = models.IntegerField(default=10,
-				validators=[
-				MaxValueValidator(120),
-				MinValueValidator(1)
-				]
-			)
+			validators=[
+			MaxValueValidator(120),
+			MinValueValidator(1)
+			]
+		)
 
 	def __unicode__(self):
 		return str(self.name) + " - " + str(self.song)
