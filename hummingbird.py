@@ -94,8 +94,6 @@ class System:
                 user_dict = ast.literal_eval(r.text)
                 
                 if not cached and user_dict!=0:
-                    print "found user"
-                    ## TO DO: CREATE USER FROM API
                     user = User(system=self, name=user_dict['name'], song=user_dict['song'], length=float(user_dict['length']), arrival=datetime.datetime.strptime(user_dict['last_played'],'%Y-%m-%d %H:%M:%S'))
                     # play the user's song (if theirs hasn't played already)
                     # if user.song != settings.DO_NOT_PLAY and user.has_not_played_today():

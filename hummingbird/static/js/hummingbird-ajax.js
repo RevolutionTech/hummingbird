@@ -10,7 +10,7 @@ $(document).ready(function() {
         });
 
     });
-        $(".user-div").hover( function() {
+        $(".user-div").hover(function() {
                 $(this).find('.delete-user').show();
         },
         function() {
