@@ -3,52 +3,58 @@
 {% block title %}My Profile{% endblock %}
 
 {% block body_block %}
-<div>
-{% if added_song %}
-<p>
-Song updated!
-<p>
-{% endif %}
-{% if added_device %}
-Device added!
-{% endif %}
-<ul>
-  <div class = "col-xs-12 col-sm-6 placeholder">
-  <div class = "panel panel-primary">
-  <div class = "panel-heading">
-  <h3 class = "panel-title">{{ name }}</h3></div></div>
-<li>Song: {% if song %}{{ song }}{% else %}No song!{% endif %}</li>
-<li>Length: {{ length }}
-<li>Last Played: {% if last_played %}{{ last_played }}{% else %}Hasn't played yet!{% endif %}</li>
-<li>Devices:
-<div id="device-div">
-{% if devices %}
-<ul>
-{% for device in devices %}
+	<div>
+	{% if added_song %}
+		<p>
+		Song updated!
+		<p>
+	{% endif %}
+	{% if added_device %}
+		Device added!
+	{% endif %}
+	<ul>
+	 	<div class = "col-xs-12 col-sm-6 placeholder">
+	  		<div class = "panel panel-primary">
+	  			<div class = "panel-heading">
+	  				<h3 class = "panel-title">{{ name }}</h3>
+	  			</div>
+	  		</div>
+			<li>Song: {% if song %}{{ song }}{% else %}No song!{% endif %}</li>
+			<li>Length: {{ length }}</li>
+			<li>Last Played: {% if last_played %}{{ last_played }}{% else %}Hasn't played yet!{% endif %}</li>
+			<li>Devices:
+				<div id="device-div">
+					{% if devices %}
+						<ul>
+							{% for device in devices %}
+								<li class="list-group-item">{{ device.mac_id }}  <span id="delete_device" data-deviceid="{{ device.id }}" 
+								data-userprofile="{{device.user_profile.id}}" class="delete_device glyphicon glyphicon-remove" 
+								style="color:red"></span>
+								</li>
+							{% endfor %}
+						</ul>
+					{% else %}
+						No devices!
+					{% endif %}
+				</div>
+			</li>
+		
+		<br />
+		<br />
+		<br />
+	Update Song:<br />
+	<form id="user_form" method="post" action="/hummingbird/profile/{{profile.id}}/" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{ usersong_form.as_p }}
+		<input type="submit" name="submit" value="Update Song" />
+	</form>
 
-<li class="list-group-item">{{ device.mac_id }}  <span id="delete_device" data-deviceid="{{ device.id }}" data-userprofile="{{device.user_profile.id}}" class="delete_device glyphicon glyphicon-remove" style="color:red"></span></li>
-{% endfor %}
-</ul>
-{% else %}
-No devices!
-{% endif %}
-</div><p>
-<p>
-<p>
-Update Song:<br>
-<form id="user_form" method="post" action="/hummingbird/profile/{{profile.id}}/" enctype="multipart/form-data">
-	{% csrf_token %}
-	{{ usersong_form.as_p }}
-	<input type="submit" name="submit" value="Update Song" />
-</form>
+	<br />
 
-<p><p><p>
-
-Add Device:
-<form id="device_form" method="post" action="/hummingbird/profile/{{profile.id}}/" enctype="multipart/form-data">
-	{% csrf_token %}
-	{{ device_form.as_p }}
-	<input type="submit" name="submit" value="Add Device" />
-</form>
-
+	Add Device:
+	<form id="device_form" method="post" action="/hummingbird/profile/{{profile.id}}/" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{ device_form.as_p }}
+		<input type="submit" name="submit" value="Add Device" />
+	</form>
 {% endblock %}

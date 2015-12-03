@@ -1,9 +1,16 @@
 {% if userprofiles %}
-<ul class="list-group">
-  {% for profile in userprofiles %}
-  <td><li class="list-group-item text-left"><div class="user-div"><a href="/hummingbird/profile/{{profile.id}}">{{ profile.name }}</a> - {{ profile.song.name }}   <div id="delete-user" data-userprofile="{{profile.id}}" class="delete-user glyphicon glyphicon-remove" style="color:red"></div></div></li></td>
-  {% endfor %}
-  </ul>
+	<ul class="list-group">
+		{% for profile in userprofiles %}
+			<td>
+				<li class="list-group-item text-left">
+					<div class="user-div">
+					<a href="/hummingbird/profile/{{profile.id}}">{{ profile.name }}</a> - {{ profile.song.name }}   <div id="delete-user"
+					 data-userprofile="{{profile.id}}" class="delete-user glyphicon glyphicon-remove" style="color:red"></div>
+					</div>
+				</li>
+			</td>
+		{% endfor %}
+	</ul>
 {% else %}
     <strong>There are no profiles present.</strong>
 {% endif %}

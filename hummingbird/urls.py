@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 import views
 
+
 urlpatterns = patterns('',
         url(r'^$', views.index, name='index'),
         url(r'^profile/(?P<user_id>[\w\-]+)/$', views.profile, name='profile'),
@@ -11,4 +12,4 @@ urlpatterns = patterns('',
         url(r'^add_user/', views.add_user, name='add_user'),
         url(r'^delete_device/', views.delete_device, name='delete_device'),
         url(r'^delete_user/', views.delete_user, name='delete_user'),
-        )
+)
