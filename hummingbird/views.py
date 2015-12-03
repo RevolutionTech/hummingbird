@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from hummingbird.models import UserProfile, UserDevice, User
-from hummingbird.forms import UserProfileForm, UserDeviceForm, UserSongForm
+from models import UserProfile, UserDevice, User
+from forms import UserProfileForm, UserDeviceForm, UserSongForm
 from django.http import HttpResponse
 import datetime
 import urllib

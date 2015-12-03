@@ -1,5 +1,5 @@
 from django.contrib import admin
-from hummingbird.models import UserProfile, UserDevice
+from models import UserProfile, UserDevice
 
 
 class UserProfileAdmin(admin.ModelAdmin):
