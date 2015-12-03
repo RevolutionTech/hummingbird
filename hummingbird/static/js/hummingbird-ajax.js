@@ -22,7 +22,6 @@ $(document).ready(function() {
         var user;
         user = $(this).attr("data-userprofile");
         $.get('/hummingbird/delete_user/', {user_id: user}, function(data){
-        //    $('#users-div').html(data)
         });
         $(this).parent().parent().hide();
     });
