@@ -66,7 +66,6 @@ class MusicPlayer:
 			self.play_sound(sound_name="activated.wav")
 		threading.Timer(interval=config.time_check_queue, function=self.play_song_on_queue).start()
 
-
 		if not mixer.music.get_busy():
 			if self.song_queue:
 				# pop the next song off of the front of the queue
