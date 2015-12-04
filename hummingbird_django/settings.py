@@ -68,10 +68,9 @@ DATABASES = {
 MEDIA_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR)
 
-TEMPLATE_PATH = os.path.join(BASE_DIR,'templates')
 
 TEMPLATE_DIRS = (
-    TEMPLATE_PATH,
+    os.path.join(BASE_DIR,'templates'),
     )
 
 # Internationalization
