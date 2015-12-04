@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# This line is just here so that output from tcpdump does not conflict with entering the password for sudo
+# but it also serves as a good introduction to the script
+sudo echo "Go Hummingbird!"
+
+# Determine the network interface
+INTERFACE=$(echo $INTERFACE)
+if [[ -z "${INTERFACE}" ]]; then
+    if [[ "${OSTYPE}" == "linux-gnu" ]]; then
+        #INTERFACE=$(ip route get 8.8.8.8 | awk '{ print $(NF-2); exit }')
+        INTERFACE=$(ip route get 8.8.8.8 | cut -f5 -d' ' | head -1)
+    elif [[ "${OSTYPE}" == "darwin"* ]]; then
+        INTERFACE=$(route get 8.8.8.8 | grep interface | awk '{ print $NF; exit }')
+    else
+        echo "This script does not support this operating system. An override of INTERFACE is required."
+        exit 1
+    fi
+    export INTERFACE
+fi
+
+# Use Python version with pygame installed
+PYGAMEPYTHON=$(echo $PYGAMEPYTHON)
+if [[ -z "${PYGAMEPYTHON}" ]]; then
+    PYGAMEPYTHON="python"
+fi
+
+# Pipe tcpdump output to Hummingbird
+sudo tcpdump -I -e -i ${INTERFACE} 2>> tcpdump_error.log | ${PYGAMEPYTHON} hummingbird.py

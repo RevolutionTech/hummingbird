@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body_block %}
+<div class="page-header">
+        {% if user.is_authenticated %}
+        <h1>Welcome to Hummingbird, {{ user.username }}!</h1>
+        {% else %}
+        <h1>Welcome to Hummingbird!</h1>
+        {% endif %}
+</div>
+<div class="row placeholders">
+<div class="col-xs-12 col-sm-6 placeholder">
+<font size = +2><a href = "{% url 'add_user' %}">Add User</a></font><p>
+        <div class="panel panel-primary">
+        <div class="panel-heading">
+        <h3 class="panel-title">Users</h3>
+  </div>
+</div>
+
+
+<div id="users-div">
+      {% if userprofiles %}
+        <ul class="list-group">
+          {% for profile in userprofiles %}
+            <td>
+              <li class="list-group-item text-left">
+                <div class="user-div">
+                  <a href="/hummingbird/profile/{{profile.id}}">{{ profile.name }}</a> - {% if profile.song %}{{ profile.song.name }}{% else %}<i>No song... only silence</i>{% endif %}   <div id="delete-user" data-userprofile="{{profile.id}}" class="delete-user glyphicon glyphicon-remove" style="color:red"> </div>
+                </div>
+              <td>{% if profile.last_played %}Last played: {{ profile.last_played }}{% else %}<i>Hasn't played yet!</i>{% endif %}
+              </td>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+            <strong>There are no profiles present.</strong>
+      {% endif %}
+  </div>
+
+{% endblock %}

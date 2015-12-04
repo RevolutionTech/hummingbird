@@ -1,0 +1,12 @@
+{% if devices %}
+    <ul>
+    {% for device in devices %}
+        <li class="list-group-item">{{ device.mac_id }} <span id="delete_device" data-deviceid="{{ device.id }}" 
+        data-userprofile="{{device.user_profile.id}}" class="delete_device glyphicon glyphicon-remove" style="color:red">
+        </span>
+        </li>
+    {% endfor %}
+        </ul>
+{% else %}
+    No devices!
+{% endif %}
