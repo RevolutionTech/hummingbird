@@ -38,7 +38,7 @@ One thing to note is that sometimes virtual environments have issues getting acc
 
 ### Installation
 
-Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), MySQL-python, [django](https://www.djangoproject.com/), and [pydub](http://pydub.com/):
+Then in your virtual environment, you will need to install [pygame](http://www.pygame.org/wiki/about), [django](https://www.djangoproject.com/), and [pydub](http://pydub.com/):
 
     sudo apt-get -y install libsox-fmt-mp3 libsox-fmt-all mpg321 dir2ogg libav-tools
     sudo apt-get -y build-dep python-pygame
