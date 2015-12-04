@@ -10,8 +10,7 @@ import urllib
 def index(request):
     userprofile_list = UserProfile.objects.order_by('-last_played')
     context_dict = {'userprofiles': userprofile_list}
-    response = render(request, 'index.html', context_dict)
-    return response
+    return render(request, 'index.html', context_dict)
 
 
 ## Returns info for userprofile page, and will update userprofile/userdevice fields if POST is used.
@@ -41,6 +40,9 @@ def profile(request, user_id):
 	## Regardless of method (GET/POST), let's return info for the user's profile.
 	try:
 		userprofile = UserProfile.objects.get(pk=user_id)
+	except UserProfile.DoesNotExist:
+		pass
+	else:
 		context_dict['profile'] = userprofile
 		context_dict['name'] = userprofile.name
 		# If user has no song, the template will put in appropriate copy.
@@ -58,25 +60,22 @@ def profile(request, user_id):
 		device_form = UserDeviceForm()
 		context_dict['usersong_form'] = usersong_form
 		context_dict['device_form'] = device_form
-	except UserProfile.DoesNotExist:
-		pass
 	# If we updated one of the fields, pass that to the template so it can tell the user that update was successful.
 	context_dict['added_device'] = added_device
 	context_dict['added_song'] = added_song
-	return render(request,'profile.html',context_dict)
+	return render(request, 'profile.html', context_dict)
 
 
 ## Checks if user exists. If so, return user name. Otherwise, return "0". 
 def get_user_from_device(request):
-	if request.method == 'GET':
-		try:
-			device = request.GET['mac_id']
-			userdevice = UserDevice.objects.get(mac_id=device.lower())
-			user = userdevice.user_profile.id
-			return HttpResponse(user, content_type='text/plain')
-		except UserDevice.DoesNotExist:
-			return HttpResponse("0", content_type='text/plain')
-	pass
+	try:
+		device = request.GET['mac_id']
+		userdevice = UserDevice.objects.get(mac_id=device.lower())
+		user = userdevice.user_profile.id
+		return HttpResponse(user, content_type='text/plain')
+	except UserDevice.DoesNotExist:
+		return HttpResponse("0", content_type='text/plain')
+
 
 
 ## Returns information necessary to build the User object if mac_id is recognized. If not, return "0".
@@ -84,13 +83,13 @@ def get_user_from_device(request):
 def build_user_from_device(request):
 	if request.method == 'GET':
 		try:
-			device=urllib.unquote(request.GET['mac_id']).decode('utf8')
+			device = urllib.unquote(request.GET['mac_id']).decode('utf8')
 			userdevice = UserDevice.objects.get(mac_id=device.lower()) 
-			user_dict={}
+			user_dict = {}
 			user_dict['name'] = userdevice.user_profile.name
 			# If user exists, but there is no song currently associated with them, we don't have anything to play,
 			# so we return "0"
-			if userdevice.user_profile.song.name=='':
+			if userdevice.user_profile.song.name == '':
 				return HttpResponse("0", content_type='text/plain') 
 			else:
 				user_dict['song'] = userdevice.user_profile.song.name
@@ -100,7 +99,7 @@ def build_user_from_device(request):
 			# first time a user is seen, just set the "last_played" field to now, and they will play tomorrow.
 			if userdevice.user_profile.last_played is not None:
 				user_dict['last_played'] = userdevice.user_profile.last_played.strftime('%Y-%m-%d %H:%M:%S')
-			else: user_dict['last_played'] = datetime.datetime(1991,1,1).strftime('%Y-%m-%d %H:%M:%S')
+			else: user_dict['last_played'] = datetime.datetime(1991, 1, 1).strftime('%Y-%m-%d %H:%M:%S')
 			return HttpResponse(str(user_dict), content_type='text/plain')
 		except UserDevice.DoesNotExist:
 			return HttpResponse("0", content_type='text/plain')
@@ -110,7 +109,7 @@ def build_user_from_device(request):
 ## Once a user's song is played, Hummingbird uses this to update their "last_played" field to the current datetime.
 def update_last_played(request):
 	if request.method == 'GET':
-		device=urllib.unquote(request.GET['mac_id']).decode('utf8')
+		device = urllib.unquote(request.GET['mac_id']).decode('utf8')
 		userdevice = UserDevice.objects.get(mac_id=device)
 		userprofile = userdevice.user_profile
 		userprofile.last_played = datetime.datetime.now()
@@ -119,12 +118,6 @@ def update_last_played(request):
 	else:
 		return HttpResponse("0", content_type='text/plain')
 
-## I think this is deprecated.
-def get_song_from_user(request):
-	if request.method == 'GET':
-		user_id = request.GET['user_id']
-		user_profile = UserProfile.objects.get(pk=user_id)
-		song = user_profile.song
 
 ## Right now, the actual "has played today" logic is being done in hummingbird.py.
 ## Eventually, we should move as much logic to the server sas possible. So, when
@@ -165,7 +158,7 @@ def add_user(request):
 		profile_form = UserProfileForm()
 		device_form = UserDeviceForm()
 
-	return render(request,'add_user.html', {'profile_form':profile_form, 'device_form':device_form, 'registered':registered})
+	return render(request, 'add_user.html', {'profile_form': profile_form, 'device_form': device_form, 'registered': registered})
 
 
 ## Endpoint for deleting a specific device from a user's profile page.
