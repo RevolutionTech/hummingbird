@@ -2,7 +2,6 @@ import datetime
 import threading
 from sys import stdin
 
-
 import ast
 import requests
 import random

@@ -8,15 +8,14 @@ $(document).ready(function() {
         $.get('/hummingbird/delete_device/', {device_id: device, user_id: user}, function(data){
             $('#device-div').html(data)
         });
-
     });
-        $(".user-div").hover(function() {
-                $(this).find('.delete-user').show();
-        },
-        function() {
-                $(this).find('.delete-user').hide();
-        });
 
+    $(".user-div").hover(function() {
+            $(this).find('.delete-user').show();
+    },
+    function() {
+            $(this).find('.delete-user').hide();
+    });
 
     $('.delete-user').click(function() {
         var user;
