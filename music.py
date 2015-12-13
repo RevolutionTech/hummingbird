@@ -1,11 +1,12 @@
 import random
 import threading
-from utils import log
 from os import listdir
+
 from pydub import AudioSegment
 from pygame import mixer
-import config
 
+import config
+from utils import log
 
 class MusicPlayer:
     def __init__(self):
