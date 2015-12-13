@@ -1,10 +1,13 @@
 import json
-from django.shortcuts import render
-from models import UserProfile, UserDevice, User
-from forms import UserProfileForm, UserDeviceForm, UserSongForm
-from django.http import HttpResponse
 import datetime
 import urllib
+from django.http import HttpResponse
+from django.shortcuts import render
+
+from models import UserProfile, UserDevice, User
+from forms import UserProfileForm, UserDeviceForm, UserSongForm
+
+
 
 
 ## TO-DO: Add div and context for files in library to allow for file deletion. As of right now, files will just accumulate in the library.
@@ -101,7 +104,6 @@ def build_user_from_device(request):
             if userdevice.user_profile.last_played is not None:
                 user_dict['last_played'] = userdevice.user_profile.last_played.strftime('%Y-%m-%d %H:%M:%S')
             else: user_dict['last_played'] = datetime.datetime(1991, 1, 1).strftime('%Y-%m-%d %H:%M:%S')
-            #return HttpResponse(str(user_dict), content_type='text/plain')
             return HttpResponse(json.dumps(user_dict), content_type='application/json')
         except UserDevice.DoesNotExist:
             return HttpResponse("0", content_type='text/plain')

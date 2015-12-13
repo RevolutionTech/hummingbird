@@ -1,12 +1,13 @@
 import datetime
 import threading
 from sys import stdin
+from os import remove
 
 import ast
 import requests
 import random
 import string
-from os import remove
+
 
 import config
 from network import get_MAC, print_MAC_address
@@ -64,13 +65,12 @@ class System:
             addresses = get_MAC(line=stdin.readline())
             self.waiting_for_input = False
             for address in addresses:
-                
                 ## Pings Hummingbird Django server. If use_cache is set to True, use self.local_payload_cache as a cache.
                 if config.use_cache:
                     if address.lower() in self.local_payload_cache:
                         # payload is a tuple of address and last_checked_datetime
                         payload = self.local_payload_cache[address.lower()]
-                        # Set a 60 second cache             
+                        # Set a cache for cache_time_seconds             
                         if (datetime.datetime.now() - payload['last_sent_dt']).seconds > config.cache_time_seconds:
                             r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)
                             payload['last_sent_dt'] = datetime.datetime.now()
