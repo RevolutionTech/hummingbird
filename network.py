@@ -1,7 +1,7 @@
 import re
 
 import config
-from hummingbird.utils import log, is_unknown_user
+from utils import log, is_unknown_user
 
 def get_MAC(line):
 	# check if line should be ignored

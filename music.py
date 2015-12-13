@@ -11,7 +11,7 @@ from utils import log
 class MusicPlayer:
     def __init__(self):
         mixer.init()
-        self.random_songs = self.find_random_songs()
+        #self.random_songs = self.find_random_songs()
         self.random_stack = []
         self.ready_to_queue = False
         self.song_queue = []

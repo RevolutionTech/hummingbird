@@ -55,7 +55,6 @@ class System:
         # Cache is only used if use_cache is set to True in config.py
         self.local_payload_cache = {}       
         self.music_player = MusicPlayer()
-        self.all_addresses = self.read_in_addresses()
         self.waiting_for_input = False
         self.input_timeout()
         log(message="Waiting for tcpdump to provide input...")
@@ -108,34 +107,6 @@ class System:
         else:
             self.waiting_for_input = True
             threading.Timer(interval=config.time_input_timeout, function=self.input_timeout).start()
-
-    def read_in_addresses(self):
-        addresses = {}
-        lines = []
-        # read in addresses from the current songs.csv
-        with open(config.data_file, 'r') as f:
-            for line in f.readlines():
-                # get the user's information
-                user_line = line.replace('\n','').split(',')
-                if len(user_line) == 3:
-                    user_line.append(config.time_max_song_length)
-                user_address, user_name, user_song, user_songlength = user_line
-                user = User(system=self, name=user_name, song=user_song, length=float(user_songlength), arrival=datetime.datetime.utcfromtimestamp(0))
-
-                # update the user's line and add to our dict
-                lines.append(line.replace(config.need_to_assign, user.song))
-                addresses[user_address] = user
-
-                # update random song use count
-                if user_song.startswith(config.audio_dir+config.random_subdir):
-                    self.music_player.increment_random_song_use(song=user_song)
-
-        # rewrite the data file to handle changes (for NTAs)
-        remove(config.data_file)
-        with open(config.data_file, 'w') as f:
-            f.writelines(lines)
-
-        return addresses
 
     def add_new_address(self, address, user_name=config.unknown_user_prefix):
         # if the address is new, add it to our dict
