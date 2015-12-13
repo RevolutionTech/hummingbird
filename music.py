@@ -11,8 +11,6 @@ from utils import log
 class MusicPlayer:
     def __init__(self):
         mixer.init()
-        #self.random_songs = self.find_random_songs()
-        self.random_stack = []
         self.ready_to_queue = False
         self.song_queue = []
         self.user_song_currently_playing = None
@@ -26,39 +24,6 @@ class MusicPlayer:
 
     ## Random songs are currently deprecated. We may want
     ## to add random songs back in, but server-side.
-    def find_random_songs(self):
-        randomDir = config.audio_dir + config.random_subdir
-        random_songs = {}
-        for song in listdir(randomDir):
-            if not song.startswith('.'):
-                random_songs[randomDir+song] = 0
-        return random_songs
-
-    ## Random songs are currently deprecated. We may want
-    ## to add random songs back in, but server-side.
-    def increment_random_song_use(self, song):
-        self.random_songs[song] += 1
-
-    ## Random songs are currently deprecated. We may want
-    ## to add random songs back in, but server-side.
-    def get_random_song(self):
-        # generate new random stack, if required
-        if len(self.random_stack) == 0:
-            min_song_use = float('inf')
-            for key, val in self.random_songs.iteritems():
-                if val < min_song_use:
-                    min_song_use = val
-                    random_stack = []
-                if val == min_song_use:
-                    random_stack.append(key)
-            random.shuffle(random_stack)
-            self.random_stack = random_stack
-
-        # get next element off of the stack
-        song = self.random_stack[0]
-        self.random_stack = self.random_stack[1:]
-        self.increment_random_song_use(song=song)
-        return song
 
     def play_song_on_queue(self):
         if not self.ready_to_queue:
