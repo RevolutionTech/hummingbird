@@ -8,13 +8,14 @@ from pygame import mixer
 import config
 from utils import log
 
+
 class MusicPlayer:
     def __init__(self):
         mixer.init()
         self.ready_to_queue = False
         self.song_queue = []
         self.user_song_currently_playing = None
-        
+
         # wait before queuing any songs
         if config.wait_to_play:
             time_wait_to_play = config.time_wait_to_play

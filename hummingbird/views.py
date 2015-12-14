@@ -1,6 +1,7 @@
 import json
 import datetime
 import urllib
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
