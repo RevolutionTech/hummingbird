@@ -3,6 +3,7 @@ import re
 import config
 from utils import log, is_unknown_user
 
+
 def get_MAC(line):
 	# check if line should be ignored
 	for regex in config.tcpdump_re_ignore:

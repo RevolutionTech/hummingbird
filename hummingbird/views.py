@@ -8,8 +8,6 @@ from models import UserProfile, UserDevice, User
 from forms import UserProfileForm, UserDeviceForm, UserSongForm
 
 
-
-
 ## TO-DO: Add div and context for files in library to allow for file deletion. As of right now, files will just accumulate in the library.
 def index(request):
     userprofile_list = UserProfile.objects.order_by('-last_played')

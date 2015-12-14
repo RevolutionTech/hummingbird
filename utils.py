@@ -4,6 +4,7 @@ import random
 
 import config
 
+
 def log(message):
 	print "[{timestamp}] {message}".format(timestamp=datetime.datetime.now().replace(microsecond=0), message=message)
 
