@@ -1,12 +1,13 @@
 import datetime
 import threading
 from sys import stdin
+from os import remove
 
 import ast
 import requests
 import random
 import string
-from os import remove
+
 
 import config
 from network import get_MAC, print_MAC_address
@@ -55,7 +56,6 @@ class System:
         # Cache is only used if use_cache is set to True in config.py
         self.local_payload_cache = {}       
         self.music_player = MusicPlayer()
-        self.all_addresses = self.read_in_addresses()
         self.waiting_for_input = False
         self.input_timeout()
         log(message="Waiting for tcpdump to provide input...")
@@ -65,13 +65,12 @@ class System:
             addresses = get_MAC(line=stdin.readline())
             self.waiting_for_input = False
             for address in addresses:
-                
                 ## Pings Hummingbird Django server. If use_cache is set to True, use self.local_payload_cache as a cache.
                 if config.use_cache:
                     if address.lower() in self.local_payload_cache:
                         # payload is a tuple of address and last_checked_datetime
                         payload = self.local_payload_cache[address.lower()]
-                        # Set a 60 second cache             
+                        # Set a cache for cache_time_seconds (defaults to 60 seconds)             
                         if (datetime.datetime.now() - payload['last_sent_dt']).seconds > config.cache_time_seconds:
                             r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)
                             payload['last_sent_dt'] = datetime.datetime.now()
@@ -90,7 +89,7 @@ class System:
                     cached = False
 
                 ## Convert the string representation of a dicitonary with user info into a dictionary object.
-                user_dict = ast.literal_eval(r.text)
+                user_dict = r.json()
                 
                 if not cached and user_dict!=0:
                     user = User(system=self, name=user_dict['name'], song=user_dict['song'], length=float(user_dict['length']), arrival=datetime.datetime.strptime(user_dict['last_played'],'%Y-%m-%d %H:%M:%S'))
@@ -108,34 +107,6 @@ class System:
         else:
             self.waiting_for_input = True
             threading.Timer(interval=config.time_input_timeout, function=self.input_timeout).start()
-
-    def read_in_addresses(self):
-        addresses = {}
-        lines = []
-        # read in addresses from the current songs.csv
-        with open(config.data_file, 'r') as f:
-            for line in f.readlines():
-                # get the user's information
-                user_line = line.replace('\n','').split(',')
-                if len(user_line) == 3:
-                    user_line.append(config.time_max_song_length)
-                user_address, user_name, user_song, user_songlength = user_line
-                user = User(system=self, name=user_name, song=user_song, length=float(user_songlength), arrival=datetime.datetime.utcfromtimestamp(0))
-
-                # update the user's line and add to our dict
-                lines.append(line.replace(config.need_to_assign, user.song))
-                addresses[user_address] = user
-
-                # update random song use count
-                if user_song.startswith(config.audio_dir+config.random_subdir):
-                    self.music_player.increment_random_song_use(song=user_song)
-
-        # rewrite the data file to handle changes (for NTAs)
-        remove(config.data_file)
-        with open(config.data_file, 'w') as f:
-            f.writelines(lines)
-
-        return addresses
 
     def add_new_address(self, address, user_name=config.unknown_user_prefix):
         # if the address is new, add it to our dict
