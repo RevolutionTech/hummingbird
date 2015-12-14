@@ -70,7 +70,7 @@ class System:
                     if address.lower() in self.local_payload_cache:
                         # payload is a tuple of address and last_checked_datetime
                         payload = self.local_payload_cache[address.lower()]
-                        # Set a cache for cache_time_seconds             
+                        # Set a cache for cache_time_seconds (defaults to 60 seconds)             
                         if (datetime.datetime.now() - payload['last_sent_dt']).seconds > config.cache_time_seconds:
                             r = requests.get("http://127.0.0.1:8000/hummingbird/build_user_from_device/", params=payload)
                             payload['last_sent_dt'] = datetime.datetime.now()
