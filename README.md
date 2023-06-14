@@ -24,9 +24,9 @@ To use Hummingbird, you may need to [enable monitor mode](http://wiki.wireshark.
     sudo apt-get install tshark
     sudo setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
 
-The latter command gives your user permission to read data directly from the network. Additionally, Hummingbird requires [MySQL](http://www.mysql.com/), which you can install on debian with:
+The latter command gives your user permission to read data directly from the network. Additionally, Hummingbird requires [MySQL](http://www.mysql.com/) and pip, which you can install on debian with:
 
-    sudo apt-get -y install mysql-server mysql-client libmysqlclient-dev
+    sudo apt-get -y install mysql-server mysql-client libmysqlclient-dev python-pip
 
 Remember the database credentials, because we will need them later in the setup.
 
